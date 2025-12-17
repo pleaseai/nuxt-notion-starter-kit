@@ -40,7 +40,7 @@ export interface SiteConfig {
 
 const config: SiteConfig = {
   // The site's root Notion page (required)
-  rootNotionPageId: '7875426197cf461698809def95960ebf',
+  rootNotionPageId: '2cc9accad7c6814ba67ad32dbdd2ffce',
 
   // If you want to restrict pages to a single notion workspace (optional)
   rootNotionSpaceId: null,

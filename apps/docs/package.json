@@ -22,7 +22,7 @@
     "vue-router": "catalog:"
   },
   "devDependencies": {
-    "typescript": "catalog:",
-    "eslint": "catalog:"
+    "eslint": "catalog:",
+    "typescript": "catalog:"
   }
 }

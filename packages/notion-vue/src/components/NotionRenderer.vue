@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<NotionRendererProps>(), {
   showTableOfContents: false,
   minTableOfContentsItems: 3,
   defaultPageCoverPosition: 0.5,
+  isLinkCollectionToUrlProperty: false,
 })
 
 // Create reactive context that updates when props change
@@ -33,6 +34,7 @@ const context = computed<NotionContext>(() => ({
   defaultPageIcon: props.defaultPageIcon,
   defaultPageCover: props.defaultPageCover,
   defaultPageCoverPosition: props.defaultPageCoverPosition,
+  isLinkCollectionToUrlProperty: props.isLinkCollectionToUrlProperty,
 }))
 
 // Provide a reactive context object that stays in sync with props

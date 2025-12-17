@@ -31,8 +31,8 @@ Quick reference for features not yet implemented in nuxt-notion-starter-kit.
 ## Medium Priority
 
 ### Collection Views
-- [ ] **Gallery View** - Grid layout with cover images
-  - Ref: `ref/react-notion-x/packages/react-notion-x/src/third-party/collection-view-gallery.tsx`
+- [x] **Gallery View** - Grid layout with cover images
+  - Implemented: `packages/notion-vue/src/components/collection/CollectionViewGallery.vue`
 - [ ] **Board View** - Kanban-style view
   - Ref: `ref/react-notion-x/packages/react-notion-x/src/third-party/collection-view-board.tsx`
 - [ ] **List View** - Simplified list layout
@@ -108,8 +108,9 @@ Quick reference for features not yet implemented in nuxt-notion-starter-kit.
 - [x] NotionBlock - All basic block types
 - [x] NotionText - All text decorations
 - [x] NotionAsset - Image, Video, Embed, Bookmark
-- [x] NotionCollection - Table view (MVP)
+- [x] NotionCollection - Table view (MVP) + Gallery view
 - [x] NotionCode - Syntax highlighting with Shiki
+- [x] CollectionViewGallery - Gallery view with cover images and grouping
 
 ### Layout Components
 - [x] NotionHeader - Site navigation header

@@ -1,7 +1,13 @@
 <script setup lang="ts">
+import type { NotionComponents } from '@pleaseai/notion-vue'
 import { NotionRenderer } from '@pleaseai/notion-vue'
 
 const config = useRuntimeConfig()
+
+// Use NotionImage (NuxtImg wrapper) for optimized image loading
+const notionComponents: Partial<NotionComponents> = {
+  Image: resolveComponent('NotionImage'),
+}
 const siteConfig = config.public.siteConfig as {
   rootNotionPageId: string
   name: string
@@ -49,6 +55,7 @@ function mapPageUrl(pageId: string): string {
       :dark-mode="isDarkMode"
       :full-page="true"
       :map-page-url="mapPageUrl"
+      :components="notionComponents"
     />
   </div>
 </template>

@@ -1028,3 +1028,140 @@
   padding-left: 40px;
   font-size: 12px;
 }
+
+/* ==========================================================================
+   Collection Gallery View
+   ========================================================================== */
+
+.notion-gallery {
+  width: 100%;
+  padding-top: 4px;
+}
+
+.notion-gallery-view {
+  width: 100%;
+}
+
+/* Gallery Grid */
+.notion-gallery-grid {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Grid sizing by cover size */
+.notion-gallery-grid-size-small {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.notion-gallery-grid-size-medium {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.notion-gallery-grid-size-large {
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+/* Gallery Card */
+.notion-collection-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-color);
+  border-radius: 3px;
+  box-shadow: rgba(15, 15, 15, 0.1) 0px 0px 0px 1px,
+    rgba(15, 15, 15, 0.1) 0px 2px 4px;
+  color: inherit;
+  text-decoration: none;
+  transition: background 100ms ease-out;
+}
+
+.notion-collection-card:hover {
+  background: var(--bg-color-1);
+}
+
+.dark-mode .notion-collection-card {
+  box-shadow: rgba(255, 255, 255, 0.1) 0px 0px 0px 1px,
+    rgba(0, 0, 0, 0.25) 0px 2px 4px;
+}
+
+/* Card Cover */
+.notion-collection-card-cover {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-color-1);
+  overflow: hidden;
+}
+
+/* Cover aspect ratios */
+.notion-collection-card-cover-aspect-cover {
+  object-fit: cover;
+}
+
+.notion-collection-card-cover-aspect-contain {
+  object-fit: contain;
+}
+
+/* Cover sizes */
+.notion-collection-card-size-small .notion-collection-card-cover {
+  height: 100px;
+}
+
+.notion-collection-card-size-medium .notion-collection-card-cover {
+  height: 150px;
+}
+
+.notion-collection-card-size-large .notion-collection-card-cover {
+  height: 200px;
+}
+
+.notion-collection-card-cover img {
+  width: 100%;
+  height: 100%;
+}
+
+.notion-collection-card-cover-empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-color-1);
+}
+
+/* Card Body */
+.notion-collection-card-body {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notion-collection-card-property {
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 21px;
+}
+
+.notion-collection-card-property:first-child {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .notion-gallery-grid-size-small,
+  .notion-gallery-grid-size-medium,
+  .notion-gallery-grid-size-large {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .notion-collection-card-size-small .notion-collection-card-cover,
+  .notion-collection-card-size-medium .notion-collection-card-cover,
+  .notion-collection-card-size-large .notion-collection-card-cover {
+    height: 120px;
+  }
+}

@@ -36,7 +36,8 @@ export function useNotionSeo(options: NotionSeoOptions = {}) {
 
   // Extract title from recordMap if not provided
   const title = computed(() => {
-    if (customTitle) return customTitle
+    if (customTitle)
+      return customTitle
 
     if (recordMap && pageId) {
       const block = recordMap.block[pageId]?.value
@@ -50,13 +51,15 @@ export function useNotionSeo(options: NotionSeoOptions = {}) {
 
   // Extract description from page properties or use site default
   const description = computed(() => {
-    if (customDescription) return customDescription
+    if (customDescription)
+      return customDescription
 
     if (recordMap && pageId) {
       const block = recordMap.block[pageId]?.value
       if (block) {
         const pageDescription = getPageProperty<string>('Description', block, recordMap)
-        if (pageDescription) return pageDescription
+        if (pageDescription)
+          return pageDescription
       }
     }
 
@@ -65,10 +68,12 @@ export function useNotionSeo(options: NotionSeoOptions = {}) {
 
   // Build canonical URL
   const canonicalUrl = computed(() => {
-    if (customUrl) return customUrl
+    if (customUrl)
+      return customUrl
 
     const domain = siteConfig.domain || ''
-    if (!domain) return ''
+    if (!domain)
+      return ''
 
     const protocol = domain.includes('localhost') ? 'http' : 'https'
     const path = route.path === '/' ? '' : route.path
@@ -78,7 +83,8 @@ export function useNotionSeo(options: NotionSeoOptions = {}) {
 
   // Social image URL
   const socialImage = computed(() => {
-    if (customImage) return customImage
+    if (customImage)
+      return customImage
 
     // Could implement social image generation here
     // For now, extract from page cover if available
@@ -146,16 +152,16 @@ export function useNotionSeo(options: NotionSeoOptions = {}) {
                 '@context': 'https://schema.org',
                 '@type': 'BlogPosting',
                 '@id': `${seoUrl}#BlogPosting`,
-                mainEntityOfPage: seoUrl,
-                url: seoUrl,
-                headline: seoTitle,
-                name: seoTitle,
-                description: seoDescription,
-                author: {
+                'mainEntityOfPage': seoUrl,
+                'url': seoUrl,
+                'headline': seoTitle,
+                'name': seoTitle,
+                'description': seoDescription,
+                'author': {
                   '@type': 'Person',
-                  name: siteConfig.author,
+                  'name': siteConfig.author,
                 },
-                image: seoImage || undefined,
+                'image': seoImage || undefined,
               }),
             },
           ]

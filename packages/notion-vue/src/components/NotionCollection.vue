@@ -1,36 +1,31 @@
 <script setup lang="ts">
-import type { Block, Collection, CollectionPropertySchema, CollectionViewBlock } from 'notion-types'
+import type { Block, CollectionViewBlock, Decoration } from 'notion-types'
 import { getTextContent } from 'notion-utils'
 import { computed } from 'vue'
+import { useCollectionData } from '../composables/useCollectionData'
 import { useNotionContext } from '../composables/useNotionContext'
+import CollectionViewGallery from './collection/CollectionViewGallery.vue'
 
 const props = defineProps<{
   block: Block
 }>()
 
-const { recordMap, mapPageUrl } = useNotionContext()
+const { mapPageUrl, recordMap } = useNotionContext()
 
-const collectionId = computed(() => {
-  const block = props.block as CollectionViewBlock
-  return block.collection_id
+// Use the collection data composable for data extraction
+const {
+  collection,
+  collectionView,
+  collectionData,
+  collectionName,
+  schema,
+  blockIds,
+  viewType,
+} = useCollectionData({
+  block: () => props.block as CollectionViewBlock,
 })
 
-const collection = computed<Collection | undefined>(() => {
-  if (!collectionId.value)
-    return undefined
-  return recordMap.collection?.[collectionId.value]?.value
-})
-
-const collectionName = computed(() => {
-  if (!collection.value)
-    return ''
-  return getTextContent(collection.value.name) || 'Untitled'
-})
-
-const schema = computed<Record<string, CollectionPropertySchema>>(() => {
-  return collection.value?.schema || {}
-})
-
+// Table-specific computed values (for backward compatibility)
 const visibleColumns = computed(() => {
   const cols: string[] = []
 
@@ -54,22 +49,12 @@ interface RowData {
 }
 
 const rows = computed<RowData[]>(() => {
-  const block = props.block as CollectionViewBlock
-  const viewId = block.view_ids?.[0]
-
-  if (!viewId || !collectionId.value)
-    return []
-
-  // Get collection query results
-  const query = recordMap.collection_query?.[collectionId.value]?.[viewId]
-  const blockIds = query?.collection_group_results?.blockIds || []
-
-  return blockIds.map((blockId: string) => {
+  return blockIds.value.map((blockId: string) => {
     const rowBlock = recordMap.block[blockId]?.value
     if (!rowBlock)
       return null
 
-    const properties = (rowBlock as any).properties || {}
+    const properties = (rowBlock as unknown as Record<string, unknown>).properties as Record<string, unknown> || {}
     return {
       id: blockId,
       properties,
@@ -93,29 +78,31 @@ function getCellValue(row: RowData, columnId: string): string {
   switch (propertyType) {
     case 'title':
     case 'text':
-      return getTextContent(value as any) || ''
+      return getTextContent(value as Decoration[]) || ''
     case 'number':
-      return String((value as any)?.[0]?.[0] || '')
+      return String((value as unknown[][])?.[0]?.[0] || '')
     case 'select':
     case 'status':
-      return (value as any)?.[0]?.[0] || ''
+      return (value as unknown[][])?.[0]?.[0]?.toString() || ''
     case 'multi_select':
-      return ((value as any)?.[0]?.[0] || '').split(',').join(', ')
+      return ((value as unknown[][])?.[0]?.[0]?.toString() || '').split(',').join(', ')
     case 'date': {
-      const dateValue = (value as any)?.[0]?.[1]?.[0]?.[1]
-      if (dateValue?.start_date) {
-        return dateValue.start_date
+      const arr = value as unknown[][]
+      const dateValue = arr?.[0]?.[1] as Array<[string, Record<string, string>]> | undefined
+      const dateData = dateValue?.[0]?.[1]
+      if (dateData?.start_date) {
+        return dateData.start_date
       }
       return ''
     }
     case 'checkbox':
-      return (value as any)?.[0]?.[0] === 'Yes' ? '✓' : ''
+      return (value as unknown[][])?.[0]?.[0] === 'Yes' ? '✓' : ''
     case 'url':
     case 'email':
     case 'phone_number':
-      return (value as any)?.[0]?.[0] || ''
+      return (value as unknown[][])?.[0]?.[0]?.toString() || ''
     default:
-      return getTextContent(value as any) || ''
+      return getTextContent(value as Decoration[]) || ''
   }
 }
 
@@ -132,47 +119,58 @@ function isTitle(columnId: string): boolean {
       </h3>
     </div>
 
-    <div class="notion-table-wrapper">
-      <table class="notion-table">
-        <thead>
-          <tr>
-            <th
-              v-for="columnId in visibleColumns"
-              :key="columnId"
-              class="notion-table-header"
-            >
-              {{ getColumnHeader(columnId) }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="row in rows"
-            :key="row.id"
-            class="notion-table-row"
-          >
-            <td
-              v-for="columnId in visibleColumns"
-              :key="columnId"
-              class="notion-table-cell"
-            >
-              <a
-                v-if="isTitle(columnId)"
-                :href="mapPageUrl(row.id)"
-                class="notion-page-link"
-              >
-                {{ getCellValue(row, columnId) }}
-              </a>
-              <span v-else>{{ getCellValue(row, columnId) }}</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <!-- Gallery View -->
+    <CollectionViewGallery
+      v-if="viewType === 'gallery' && collectionView && collectionData"
+      :collection="collection"
+      :collection-view="collectionView"
+      :collection-data="collectionData"
+    />
 
-    <div v-if="rows.length === 0" class="notion-collection-empty">
-      No items
-    </div>
+    <!-- Table View (default) -->
+    <template v-else>
+      <div class="notion-table-wrapper">
+        <table class="notion-table">
+          <thead>
+            <tr>
+              <th
+                v-for="columnId in visibleColumns"
+                :key="columnId"
+                class="notion-table-header"
+              >
+                {{ getColumnHeader(columnId) }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="row in rows"
+              :key="row.id"
+              class="notion-table-row"
+            >
+              <td
+                v-for="columnId in visibleColumns"
+                :key="columnId"
+                class="notion-table-cell"
+              >
+                <a
+                  v-if="isTitle(columnId)"
+                  :href="mapPageUrl(row.id)"
+                  class="notion-page-link"
+                >
+                  {{ getCellValue(row, columnId) }}
+                </a>
+                <span v-else>{{ getCellValue(row, columnId) }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div v-if="rows.length === 0" class="notion-collection-empty">
+        No items
+      </div>
+    </template>
   </div>
 </template>
 
