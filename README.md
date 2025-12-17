@@ -7,41 +7,47 @@ A Nuxt 4 starter kit for building websites powered by Notion as a CMS.
 This project is a Nuxt-based implementation inspired by [nextjs-notion-starter-kit](https://github.com/transitive-bullshit/nextjs-notion-starter-kit). It provides:
 
 - **@pleaseai/notion-vue**: A Vue 3 component library for rendering Notion content
-- **apps/web**: A Nuxt 4 application that uses the Notion renderer
+- **@pleaseai/notion-nuxt-layer**: A Nuxt layer that provides full Notion page functionality
+- **apps/docs**: A Nuxt 4 application that extends the layer
 
 ## Features
 
-- 🎨 Full Notion block support (text, headers, lists, images, videos, code, etc.)
-- 🌙 Dark mode support
-- 📱 Responsive design
-- ⚡ Hybrid SSG + ISR rendering with Nuxt
-- 🔍 Search functionality
-- 🎯 SEO optimized
+- Full Notion block support (text, headers, lists, images, videos, code, etc.)
+- Dark mode support
+- Responsive design
+- Hybrid SSG + ISR rendering with Nuxt
+- Search functionality
+- SEO optimized
 
 ## Project Structure
 
 ```
 ├── packages/
-│   └── notion-vue/          # Vue 3 Notion renderer package
-│       ├── src/
-│       │   ├── components/  # Vue components
-│       │   ├── composables/ # Vue composables
-│       │   ├── types/       # TypeScript types
-│       │   ├── utils.ts     # Utility functions
-│       │   └── styles.css   # Notion styles
+│   ├── notion-vue/              # Vue 3 Notion renderer package
+│   │   ├── src/
+│   │   │   ├── components/      # Vue components
+│   │   │   ├── composables/     # Vue composables
+│   │   │   ├── types/           # TypeScript types
+│   │   │   ├── utils.ts         # Utility functions
+│   │   │   └── styles.css       # Notion styles
+│   │   └── package.json
+│   │
+│   └── notion-nuxt-layer/       # Nuxt layer package
+│       ├── app/
+│       │   └── pages/           # Default pages
+│       ├── server/
+│       │   ├── api/             # API routes
+│       │   └── utils/           # Server utilities
+│       ├── nuxt.config.ts       # Layer configuration
 │       └── package.json
 │
 └── apps/
-    └── web/                 # Nuxt 4 application
+    └── docs/                    # Nuxt 4 application
         ├── app/
-        │   ├── pages/       # Nuxt pages
-        │   ├── layouts/     # Nuxt layouts
-        │   └── assets/      # CSS and assets
-        ├── server/
-        │   ├── api/         # API routes
-        │   └── utils/       # Server utilities
-        ├── site.config.ts   # Site configuration
-        └── nuxt.config.ts   # Nuxt configuration
+        │   ├── layouts/         # Nuxt layouts
+        │   └── assets/          # CSS and assets
+        ├── site.config.ts       # Site configuration
+        └── nuxt.config.ts       # Nuxt configuration
 ```
 
 ## Getting Started
@@ -61,7 +67,7 @@ bun install
 
 1. Copy the example configuration:
    ```bash
-   cp apps/web/site.config.ts.example apps/web/site.config.ts
+   cp apps/docs/site.config.ts.example apps/docs/site.config.ts
    ```
 
 2. Update `site.config.ts` with your Notion page ID and site details:
@@ -84,19 +90,19 @@ bun install
 ### Development
 
 ```bash
-pnpm dev
+bun dev
 ```
 
 ### Build
 
 ```bash
-pnpm build
+bun run build
 ```
 
 ### Preview Production Build
 
 ```bash
-pnpm --filter @pleaseai/nuxt-notion-web preview
+bun run preview
 ```
 
 ## Supported Block Types

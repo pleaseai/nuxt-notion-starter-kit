@@ -29,6 +29,7 @@ yarn-error.log*
 
 # Cache
 .cache/
+.turbo/
 
 # Test coverage
 coverage/

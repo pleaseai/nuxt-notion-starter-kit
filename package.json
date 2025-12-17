@@ -11,16 +11,18 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "bun run --filter @pleaseai/nuxt-notion-web dev",
-    "build": "bun run --filter @pleaseai/notion-vue build && bun run --filter @pleaseai/nuxt-notion-web build",
-    "build:vue": "bun run --filter @pleaseai/notion-vue build",
-    "build:web": "bun run --filter @pleaseai/nuxt-notion-web build",
-    "preview": "bun run --filter @pleaseai/nuxt-notion-web preview",
-    "lint": "bun run --filter '*' lint",
-    "type-check": "bun run --filter '*' type-check",
-    "clean": "bun run --filter '*' clean"
+    "dev": "turbo dev --filter=@pleaseai/nuxt-notion-docs",
+    "build": "turbo build",
+    "build:vue": "turbo build --filter=@pleaseai/notion-vue",
+    "build:docs": "turbo build --filter=@pleaseai/nuxt-notion-docs",
+    "preview": "turbo preview --filter=@pleaseai/nuxt-notion-docs",
+    "lint": "turbo lint",
+    "type-check": "turbo type-check",
+    "clean": "turbo clean"
   },
   "devDependencies": {
+    "turbo": "^2.5.0",
     "typescript": "^5.7.2"
-  }
+  },
+  "packageManager": "bun@1.3.3"
 }
