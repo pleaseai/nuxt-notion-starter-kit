@@ -13,17 +13,17 @@
     "nuxt": "^3.15.0 || ^4.0.0"
   },
   "dependencies": {
-    "@nuxt/eslint": "^1.10.0",
-    "@nuxt/eslint-config": "^1.10.0",
-    "@nuxt/kit": "^3.20.0",
-    "@nuxtjs/color-mode": "^3.5.2",
+    "@nuxt/eslint": "catalog:",
+    "@nuxt/eslint-config": "catalog:",
+    "@nuxt/kit": "catalog:",
+    "@nuxtjs/color-mode": "catalog:",
     "@pleaseai/notion-vue": "workspace:*",
-    "eslint": "^9.0.0",
-    "notion-client": "^7.1.4",
-    "notion-types": "^7.1.4",
-    "notion-utils": "^7.1.4"
+    "eslint": "catalog:",
+    "notion-client": "catalog:",
+    "notion-types": "catalog:",
+    "notion-utils": "catalog:"
   },
   "devDependencies": {
-    "@nuxt/icon": "^2.1.1"
+    "@nuxt/icon": "catalog:"
   }
 }
