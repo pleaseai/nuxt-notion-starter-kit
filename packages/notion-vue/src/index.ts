@@ -10,6 +10,7 @@ export { default as NestedFormLink } from './components/collection/NestedFormLin
 // Icons
 export { default as EmptyIcon } from './components/icons/EmptyIcon.vue'
 // Components
+export { default as ImageLightbox } from './components/ImageLightbox.vue'
 export { default as LazyImage } from './components/LazyImage.vue'
 export { default as NotionAsset } from './components/NotionAsset.vue'
 export { default as NotionBlock } from './components/NotionBlock.vue'
@@ -28,6 +29,8 @@ export { useCollectionData } from './composables/useCollectionData'
 export type { UseCollectionDataOptions, UseCollectionDataReturn } from './composables/useCollectionData'
 export { useCollectionGroups } from './composables/useCollectionGroups'
 export type { UseCollectionGroupsOptions, UseCollectionGroupsReturn } from './composables/useCollectionGroups'
+export { provideImageLightbox, useImageLightbox } from './composables/useImageLightbox'
+export type { ImageLightboxActions, ImageLightboxContext, ImageLightboxState } from './composables/useImageLightbox'
 export { provideNestedLinkContext, useNestedLinkContext } from './composables/useNestedLinkContext'
 export type { NestedLinkContext } from './composables/useNestedLinkContext'
 // Composables
