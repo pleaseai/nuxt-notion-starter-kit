@@ -3,8 +3,11 @@ export { default as CollectionCard } from './components/collection/CollectionCar
 export { default as CollectionCardCoverComponent } from './components/collection/CollectionCardCover.vue'
 export { default as CollectionGroup } from './components/collection/CollectionGroup.vue'
 export { default as CollectionProperty } from './components/collection/CollectionProperty.vue'
+export { default as CollectionViewBoard } from './components/collection/CollectionViewBoard.vue'
 export { default as CollectionViewGallery } from './components/collection/CollectionViewGallery.vue'
 export { default as NestedFormLink } from './components/collection/NestedFormLink.vue'
+// Icons
+export { default as EmptyIcon } from './components/icons/EmptyIcon.vue'
 // Components
 export { default as LazyImage } from './components/LazyImage.vue'
 export { default as NotionAsset } from './components/NotionAsset.vue'
@@ -16,6 +19,8 @@ export { default as NotionRenderer } from './components/NotionRenderer.vue'
 export { default as NotionText } from './components/NotionText.vue'
 export { default as NotionTOC } from './components/NotionTOC.vue'
 
+export { useBoardColumns } from './composables/useBoardColumns'
+export type { UseBoardColumnsOptions, UseBoardColumnsReturn } from './composables/useBoardColumns'
 export { useCollectionCover } from './composables/useCollectionCover'
 export type { UseCollectionCoverOptions, UseCollectionCoverReturn } from './composables/useCollectionCover'
 export { useCollectionData } from './composables/useCollectionData'
@@ -40,6 +45,9 @@ export type {
 
 // Collection Types
 export type {
+  BoardCollectionViewFormat,
+  BoardColumnConfig,
+  BoardColumnData,
   CollectionCardCover,
   CollectionCardCoverAspect,
   CollectionCardCoverSize,

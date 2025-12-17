@@ -184,7 +184,110 @@ nuxt-notion-starter-kit/
 - Nuxt app: ~600 LOC
 - Total: ~1500 LOC + CSS
 
-## Next Steps
-1. GitHub Issue creation (Phase 5)
-2. Implementation (Phase 6)
-3. Quality review (Phase 7)
+---
+
+# Session: Collection Gallery View
+
+## Feature Description
+Implement Gallery View for Notion collection/database blocks. This displays database items as cards in a responsive grid layout, with cover images and selected property columns.
+
+## Requirements Summary
+- Grid layout display for collection view blocks
+- Cover image support (external images, file uploads, page content)
+- Property column display (configurable via collection view format)
+- Responsive design (adapt columns to viewport)
+- Integration with existing NotionCollection.vue component
+
+## Reference Implementation
+- `ref/react-notion-x/packages/react-notion-x/src/third-party/collection-view-gallery.tsx`
+
+## Current Phase
+**Phase 2: Codebase Exploration** - Completed
+
+## Codebase Exploration Findings
+
+### Reference Implementation (react-notion-x)
+- `collection-view-gallery.tsx`: Main gallery component (100 lines)
+  - Handles grouped/ungrouped collections
+  - Extracts format options: `gallery_cover`, `gallery_cover_size`, `gallery_cover_aspect`
+  - Grid uses CSS Grid with `auto-fill` and `minmax()` for responsive layout
+
+- `collection-card.tsx`: Card component (247 lines)
+  - Three cover types: `page_content` (first image in page), `page_cover`, `property` (file property)
+  - Cover position calculation: `(1 - page_cover_position) * 100`
+  - Properties rendered from `gallery_properties` format
+  - Uses `mapImageUrl` for all image URLs
+
+### Current Implementation (notion-vue)
+- `NotionCollection.vue`: Table-only view (240 lines)
+  - Accesses collection via `recordMap.collection[collectionId].value`
+  - Gets rows from `recordMap.collection_query[collectionId][viewId].collection_group_results.blockIds`
+  - Limited to 6 columns, no view type detection
+  - Uses scoped styles (needs migration to global styles for gallery)
+
+### Context Pattern
+- `useNotionContext()` provides: `recordMap`, `mapPageUrl`, `mapImageUrl`
+- Types in `types/index.ts` need extension for collection card props
+
+### CSS Requirements
+Gallery-specific classes NOT in notion-vue yet:
+- `.notion-gallery`, `.notion-gallery-view`, `.notion-gallery-grid`
+- `.notion-gallery-grid-size-{small|medium|large}`
+- `.notion-collection-card`, `.notion-collection-card-cover`
+- `.notion-collection-card-body`, `.notion-collection-card-property`
+
+### Key Files for Implementation
+1. `packages/notion-vue/src/components/NotionCollection.vue` - Extend for view switching
+2. `packages/notion-vue/src/types/index.ts` - Add collection card types
+3. `packages/notion-vue/src/styles.css` - Add gallery CSS classes
+4. New: `NotionCollectionGallery.vue` - Gallery view component
+5. New: `NotionCollectionCard.vue` - Reusable card component
+6. New: `NotionCollectionGroup.vue` - Grouped collection sections
+
+## Phase 3: Clarified Requirements
+
+### Confirmed Scope
+1. **Grouping Support**: YES - implement grouped collections with expand/collapse
+2. **Cover Types**: All three types
+   - `page_cover` - Page banner image
+   - `page_content` - First image block in page
+   - `property` - File property as cover
+3. **Card Links**: Always link to page (no URL property linking)
+
+### Implementation Scope
+- Responsive grid layout with CSS Grid
+- Three card sizes: small, medium (default), large
+- Cover aspect options: cover, contain
+- Property display based on `gallery_properties` format
+- Grouped collections with expandable sections
+
+## Phase 4: Architecture Decision
+
+### Chosen Approach: Clean Architecture (~1,055 LOC)
+
+**Component Structure**:
+```
+/packages/notion-vue/src/
+├── components/
+│   ├── NotionCollection.vue        # Modified (orchestrator)
+│   └── collection/
+│       ├── CollectionViewGallery.vue   # Gallery grid
+│       ├── CollectionGroup.vue         # Expandable groups
+│       ├── CollectionCard.vue          # Card container
+│       ├── CollectionCardCover.vue     # Cover image
+│       └── CollectionProperty.vue      # Property renderer
+├── composables/
+│   ├── useCollectionData.ts        # Data extraction
+│   ├── useCollectionGroups.ts      # Group logic
+│   └── useCollectionCover.ts       # Cover URL resolution
+├── styles/
+│   └── collection.css              # Gallery CSS
+└── types/
+    └── collection.ts               # Collection types
+```
+
+**Rationale**:
+- Better testability with composables
+- Reusable components for future Board/List views
+- Clear separation of concerns
+- Each component under 300 LOC (engineering standards compliant)
