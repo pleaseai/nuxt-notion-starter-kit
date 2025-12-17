@@ -73,16 +73,17 @@ function getBlock(blockId: string): PageBlock | undefined {
             class="notion-gallery-grid"
             :class="`notion-gallery-grid-size-${coverSize}`"
           >
-            <CollectionCard
-              v-for="blockId in group.blockIds"
-              :key="blockId"
-              :block="getBlock(blockId)!"
-              :collection="collection"
-              :cover="cover"
-              :cover-size="coverSize"
-              :cover-aspect="coverAspect"
-              :properties="galleryProperties"
-            />
+            <template v-for="blockId in group.blockIds" :key="blockId">
+              <CollectionCard
+                v-if="getBlock(blockId)"
+                :block="getBlock(blockId)!"
+                :collection="collection"
+                :cover="cover"
+                :cover-size="coverSize"
+                :cover-aspect="coverAspect"
+                :properties="galleryProperties"
+              />
+            </template>
           </div>
         </CollectionGroup>
       </template>
@@ -93,16 +94,17 @@ function getBlock(blockId: string): PageBlock | undefined {
         class="notion-gallery-grid"
         :class="`notion-gallery-grid-size-${coverSize}`"
       >
-        <CollectionCard
-          v-for="blockId in ungroupedBlockIds"
-          :key="blockId"
-          :block="getBlock(blockId)!"
-          :collection="collection"
-          :cover="cover"
-          :cover-size="coverSize"
-          :cover-aspect="coverAspect"
-          :properties="galleryProperties"
-        />
+        <template v-for="blockId in ungroupedBlockIds" :key="blockId">
+          <CollectionCard
+            v-if="getBlock(blockId)"
+            :block="getBlock(blockId)!"
+            :collection="collection"
+            :cover="cover"
+            :cover-size="coverSize"
+            :cover-aspect="coverAspect"
+            :properties="galleryProperties"
+          />
+        </template>
       </div>
     </div>
   </div>

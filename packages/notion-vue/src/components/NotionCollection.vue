@@ -10,7 +10,7 @@ const props = defineProps<{
   block: Block
 }>()
 
-const { mapPageUrl } = useNotionContext()
+const { mapPageUrl, recordMap } = useNotionContext()
 
 // Use the collection data composable for data extraction
 const {
@@ -50,7 +50,6 @@ interface RowData {
 
 const rows = computed<RowData[]>(() => {
   return blockIds.value.map((blockId: string) => {
-    const { recordMap } = useNotionContext()
     const rowBlock = recordMap.block[blockId]?.value
     if (!rowBlock)
       return null
