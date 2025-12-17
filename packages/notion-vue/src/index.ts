@@ -5,9 +5,12 @@ export { default as NotionCode } from './components/NotionCode.vue'
 export { default as NotionCollection } from './components/NotionCollection.vue'
 export { default as NotionRenderer } from './components/NotionRenderer.vue'
 export { default as NotionText } from './components/NotionText.vue'
+export { default as NotionTOC } from './components/NotionTOC.vue'
 
 // Composables
 export { provideNotionContext, useNotionContext } from './composables/useNotionContext'
+export { useTableOfContents } from './composables/useTableOfContents'
+export type { TableOfContentsEntry } from './composables/useTableOfContents'
 
 // Types
 export type {
