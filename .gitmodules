@@ -1,0 +1,12 @@
+[submodule "ref/nextjs-notion-starter-kit"]
+	path = ref/nextjs-notion-starter-kit
+	url = https://github.com/transitive-bullshit/nextjs-notion-starter-kit
+[submodule "ref/react-notion-x"]
+	path = ref/react-notion-x
+	url = https://github.com/NotionX/react-notion-x
+[submodule "ref/vue-notion"]
+	path = ref/vue-notion
+	url = https://github.com/janniks/vue-notion
+[submodule "ref/docus"]
+	path = ref/docus
+	url = https://github.com/nuxt-content/docus
