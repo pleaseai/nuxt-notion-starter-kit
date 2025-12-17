@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   },
 
   devtools: { enabled: true },
+  devServer: { port: 3900 },
 
   // Expose site config to runtime
   runtimeConfig: {
@@ -18,7 +19,6 @@ export default defineNuxtConfig({
       host: process.env.NUXT_PUBLIC_HOST || `https://${siteConfig.domain}`,
     },
   },
-
   app: {
     head: {
       htmlAttrs: { lang: siteConfig.language || 'en' },
