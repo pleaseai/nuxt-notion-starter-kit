@@ -1,7 +1,6 @@
 import siteConfig from './site.config'
 
 export default defineNuxtConfig({
-  extends: ['@pleaseai/notion-nuxt-layer'],
   compatibilityDate: '2025-07-22',
 
   future: {
