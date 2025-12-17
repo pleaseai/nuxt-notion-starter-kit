@@ -68,6 +68,48 @@ export interface GalleryCollectionViewFormat {
 }
 
 /**
+ * Board column configuration from collection view format
+ */
+export interface BoardColumnConfig {
+  property: PropertyID
+  hidden: boolean
+  value: {
+    type: string
+    value: string | undefined
+  }
+}
+
+/**
+ * Board-specific collection view format
+ */
+export interface BoardCollectionViewFormat {
+  board_cover: CollectionCardCover
+  board_cover_size: CollectionCardCoverSize
+  board_cover_aspect: CollectionCardCoverAspect
+  board_properties?: CollectionPropertyConfig[]
+  board_columns?: BoardColumnConfig[]
+  board_groups2?: BoardColumnConfig[]
+  board_columns_by?: {
+    groupBy: PropertyID
+  }
+  collection_group_by?: PropertyID
+  collection_groups?: CollectionGroupConfig[]
+}
+
+/**
+ * Processed board column data for rendering
+ */
+export interface BoardColumnData {
+  property: PropertyID
+  schema: CollectionPropertySchema | undefined
+  value: string | undefined
+  valueType: string
+  hidden: boolean
+  blockIds: string[]
+  total: number
+}
+
+/**
  * Group configuration from collection view format
  */
 export interface CollectionGroupConfig {

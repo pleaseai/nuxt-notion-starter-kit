@@ -1,50 +1,45 @@
 {
-  "session_id": "20251217-page-aside-toc",
-  "feature_name": "Page Aside (Table of Contents) Component",
-  "created_at": "2025-12-17T20:00:00Z",
-  "updated_at": "2025-12-17T21:30:00Z",
-  "status": "completed",
-  "current_phase": 8,
-  "pr_number": 12,
+  "session_id": "20251218-collection-board-view",
+  "feature_name": "Collection Board View",
+  "created_at": "2025-12-18T15:00:00Z",
+  "updated_at": "2025-12-18T15:00:00Z",
+  "status": "in_progress",
+  "current_phase": 6,
   "phases": [
-    { "number": 1, "name": "Discovery", "status": "completed", "started_at": "2025-12-17T20:00:00Z", "completed_at": "2025-12-17T20:05:00Z" },
-    { "number": 2, "name": "Codebase Exploration", "status": "completed", "started_at": "2025-12-17T20:05:00Z", "completed_at": "2025-12-17T20:15:00Z" },
-    { "number": 3, "name": "Clarifying Questions", "status": "skipped" },
-    { "number": 4, "name": "Architecture Design", "status": "completed", "started_at": "2025-12-17T20:15:00Z", "completed_at": "2025-12-17T20:20:00Z" },
-    { "number": 5, "name": "GitHub Issue & PR", "status": "completed", "started_at": "2025-12-17T20:20:00Z", "completed_at": "2025-12-17T20:25:00Z" },
-    { "number": 6, "name": "Implementation", "status": "completed", "started_at": "2025-12-17T20:25:00Z", "completed_at": "2025-12-17T21:00:00Z" },
-    { "number": 7, "name": "Quality Review", "status": "completed", "started_at": "2025-12-17T21:00:00Z", "completed_at": "2025-12-17T21:30:00Z" },
-    { "number": 8, "name": "PR Finalization", "status": "completed", "started_at": "2025-12-17T21:30:00Z", "completed_at": "2025-12-17T21:35:00Z" }
+    { "number": 1, "name": "Discovery", "status": "completed", "started_at": "2025-12-18T15:00:00Z", "completed_at": "2025-12-18T15:10:00Z" },
+    { "number": 2, "name": "Codebase Exploration", "status": "completed", "started_at": "2025-12-18T15:10:00Z", "completed_at": "2025-12-18T15:20:00Z" },
+    { "number": 3, "name": "Clarifying Questions", "status": "completed", "started_at": "2025-12-18T15:20:00Z", "completed_at": "2025-12-18T15:22:00Z" },
+    { "number": 4, "name": "Architecture Design", "status": "completed", "started_at": "2025-12-18T15:22:00Z", "completed_at": "2025-12-18T15:30:00Z" },
+    { "number": 5, "name": "GitHub Issue & PR", "status": "completed", "started_at": "2025-12-18T15:30:00Z", "completed_at": "2025-12-18T15:35:00Z" },
+    { "number": 6, "name": "Implementation", "status": "in_progress", "started_at": "2025-12-18T15:35:00Z" },
+    { "number": 7, "name": "Quality Review", "status": "pending" },
+    { "number": 8, "name": "PR Finalization", "status": "pending" }
   ],
   "features": [
     {
-      "id": "F001",
-      "name": "Page Aside (TOC)",
+      "id": "F002",
+      "name": "Collection Board View",
       "priority": "medium",
-      "status": "completed",
-      "ref": "ref/nextjs-notion-starter-kit/components/PageAside.tsx",
-      "description": "Table of contents sidebar that shows page headings and allows quick navigation"
+      "status": "in_progress",
+      "ref": "ref/react-notion-x/packages/react-notion-x/src/third-party/collection-view-board.tsx",
+      "description": "Kanban-style view for displaying Notion database collections with horizontal columns"
     }
   ],
-  "issue_number": 11,
-  "branch": "11-implement-page-aside-table-of-contents-component",
-  "tasks": [
-    { "id": "T001", "title": "Create useTableOfContents composable", "phase": 6, "status": "completed", "parallel": true },
-    { "id": "T002", "title": "Create NotionTOC.vue component with scroll spy", "phase": 6, "status": "completed", "parallel": true },
-    { "id": "T003", "title": "Add data-id attribute to header blocks", "phase": 6, "status": "completed", "dependencies": ["T002"] },
-    { "id": "T004", "title": "Integrate NotionTOC into NotionRenderer.vue", "phase": 6, "status": "completed", "dependencies": ["T001", "T002"] },
-    { "id": "T005", "title": "Add TOC CSS styles to styles.css", "phase": 6, "status": "completed", "dependencies": ["T002"] },
-    { "id": "T006", "title": "Export NotionTOC and useTableOfContents from index.ts", "phase": 6, "status": "completed", "dependencies": ["T001", "T002"] },
-    { "id": "T007", "title": "Update TODO.md to mark Page Aside as completed", "phase": 6, "status": "completed", "dependencies": ["T004"] },
-    { "id": "T008", "title": "Fix critical issues from code review", "phase": 7, "status": "completed", "notes": "Fixed MaybeRefOrGetter pattern, SSR guards, throttle cleanup" }
-  ],
-  "decisions": {
-    "reactivity_pattern": "MaybeRefOrGetter with toValue() for composable arguments",
-    "cleanup_strategy": "onScopeDispose with createThrottle cleanup function"
-  },
+  "issue_number": 15,
+  "branch": "15-featnotion-vue-implement-collection-board-view",
   "checkpoint_config": {
     "mode": "auto",
     "push_strategy": "batch",
     "validation_required": true
-  }
+  },
+  "tasks": [
+    { "id": "T001", "title": "Add board types to types/collection.ts", "phase": 6, "status": "pending", "parallel": true, "dependencies": [] },
+    { "id": "T002", "title": "Create useBoardColumns.ts composable", "phase": 6, "status": "pending", "parallel": true, "dependencies": [] },
+    { "id": "T003", "title": "Create EmptyIcon.vue component", "phase": 6, "status": "pending", "parallel": true, "dependencies": [] },
+    { "id": "T004", "title": "Create CollectionViewBoard.vue component", "phase": 6, "status": "pending", "parallel": false, "dependencies": ["T001", "T002", "T003"] },
+    { "id": "T005", "title": "Update NotionCollection.vue to route board view", "phase": 6, "status": "pending", "parallel": false, "dependencies": ["T004"] },
+    { "id": "T006", "title": "Add board CSS to styles.css", "phase": 6, "status": "pending", "parallel": true, "dependencies": [] },
+    { "id": "T007", "title": "Export new components in index.ts", "phase": 6, "status": "pending", "parallel": false, "dependencies": ["T004"] },
+    { "id": "T008", "title": "Update TODO.md to mark Board View completed", "phase": 6, "status": "pending", "parallel": false, "dependencies": ["T005"] }
+  ]
 }

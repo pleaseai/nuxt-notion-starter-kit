@@ -1151,6 +1151,112 @@
   font-size: 14px;
 }
 
+/* Board View */
+.notion-board {
+  width: 100vw;
+  max-width: 100vw;
+  align-self: center;
+  overflow: auto hidden;
+}
+
+.notion-board-view {
+  position: relative;
+  float: left;
+  min-width: 100%;
+  padding-left: 0;
+  transition: padding 200ms ease-out;
+}
+
+.notion-board-header {
+  display: flex;
+  position: absolute;
+  z-index: 82;
+  height: 44px;
+  min-width: 100%;
+}
+
+.notion-board-header-inner {
+  display: inline-flex;
+  border-top: 1px solid var(--fg-color-1);
+  border-bottom: 1px solid var(--fg-color-1);
+}
+
+.notion-board-header-placeholder {
+  height: 44px;
+}
+
+.notion-board-th {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  padding-right: 16px;
+  box-sizing: content-box;
+}
+
+.notion-board-th-body {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  line-height: 1.2;
+  padding-left: 2px;
+}
+
+.notion-board-th-count {
+  color: var(--fg-color-3);
+  font-weight: 500;
+  padding: 0 8px;
+}
+
+.notion-board-th-empty {
+  margin-right: 6px;
+  position: relative;
+  top: 2px;
+  fill: currentColor;
+}
+
+.notion-board-body {
+  display: inline-flex;
+}
+
+.notion-board-group {
+  flex: 0 0 auto;
+  padding-right: 16px;
+  box-sizing: content-box;
+}
+
+.notion-board-group-card {
+  margin-bottom: 8px;
+}
+
+/* Board column widths */
+.notion-board-view .notion-board-th,
+.notion-board-view .notion-board-group {
+  width: 260px;
+}
+
+.notion-board-view-size-small .notion-board-th,
+.notion-board-view-size-small .notion-board-group {
+  width: 180px;
+}
+
+.notion-board-view-size-large .notion-board-th,
+.notion-board-view-size-large .notion-board-group {
+  width: 320px;
+}
+
+/* Board card cover heights */
+.notion-board-view .notion-collection-card .notion-collection-card-cover {
+  height: 148px;
+}
+
+.notion-board-view-size-small .notion-collection-card .notion-collection-card-cover {
+  height: 100px;
+}
+
+.notion-board-view-size-large .notion-collection-card .notion-collection-card-cover {
+  height: 180px;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 640px) {
   .notion-gallery-grid-size-small,
