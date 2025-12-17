@@ -2,7 +2,7 @@
 import type { Block, PageBlock } from 'notion-types'
 import type { NotionContext, NotionRendererProps } from '../types'
 import { getBlockTitle } from 'notion-utils'
-import { computed } from 'vue'
+import { computed, reactive, watchEffect } from 'vue'
 import { provideNotionContext } from '../composables/useNotionContext'
 import { useTableOfContents } from '../composables/useTableOfContents'
 import { createMapPageUrl, cs, mapImageUrl as defaultMapImageUrl } from '../utils'
@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<NotionRendererProps>(), {
   defaultPageCoverPosition: 0.5,
 })
 
-// Create context
+// Create reactive context that updates when props change
 const context = computed<NotionContext>(() => ({
   recordMap: props.recordMap,
   components: props.components || {},
@@ -35,7 +35,12 @@ const context = computed<NotionContext>(() => ({
   defaultPageCoverPosition: props.defaultPageCoverPosition,
 }))
 
-provideNotionContext(context.value)
+// Provide a reactive context object that stays in sync with props
+const reactiveContext = reactive<NotionContext>({} as NotionContext)
+watchEffect(() => {
+  Object.assign(reactiveContext, context.value)
+})
+provideNotionContext(reactiveContext)
 
 // Get root block
 const rootBlock = computed<Block | undefined>(() => {

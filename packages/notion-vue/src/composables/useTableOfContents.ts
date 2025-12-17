@@ -163,6 +163,7 @@ export function useTableOfContents(
   // Scroll spy state
   let scrollListenerActive = false
   let throttleCleanup: (() => void) | null = null
+  let scrollHandler: (() => void) | null = null
 
   const updateActiveSection = (): void => {
     // SSR guard
@@ -209,6 +210,7 @@ export function useTableOfContents(
 
     const { throttled, cleanup } = createThrottle(updateActiveSection, 100)
     throttleCleanup = cleanup
+    scrollHandler = throttled
 
     window.addEventListener('scroll', throttled)
     scrollListenerActive = true
@@ -221,9 +223,9 @@ export function useTableOfContents(
     if (!scrollListenerActive)
       return
 
-    if (typeof window !== 'undefined') {
-      // Note: We can't remove the exact throttled function, so we use a flag
-      // The listener will be cleaned up when the component unmounts
+    if (typeof window !== 'undefined' && scrollHandler) {
+      window.removeEventListener('scroll', scrollHandler)
+      scrollHandler = null
     }
 
     if (throttleCleanup) {
@@ -252,10 +254,6 @@ export function useTableOfContents(
   // Cleanup on scope dispose
   onScopeDispose(() => {
     cleanupScrollListener()
-    if (typeof window !== 'undefined') {
-      // Remove scroll listener - need to recreate throttled function reference
-      // For safety, we'll use the cleanup approach
-    }
   })
 
   return {

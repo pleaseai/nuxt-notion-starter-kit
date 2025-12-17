@@ -24,14 +24,15 @@ const hasEntries = computed(() => hasToc.value && entries.value.length > 0)
 
 <template>
   <div v-if="hasEntries" class="notion-aside-table-of-contents">
-    <div class="notion-aside-table-of-contents-header">
+    <div id="notion-toc-header" class="notion-aside-table-of-contents-header">
       Table of Contents
     </div>
-    <nav class="notion-table-of-contents">
+    <nav class="notion-table-of-contents" aria-labelledby="notion-toc-header">
       <a
         v-for="entry in entries"
         :key="entry.id"
         :href="`#${entry.id}`"
+        :aria-current="activeSection === entry.id ? 'true' : undefined"
         :class="cs(
           'notion-table-of-contents-item',
           `notion-table-of-contents-item-indent-level-${entry.indentLevel}`,

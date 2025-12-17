@@ -133,9 +133,10 @@
   background: var(--select-color-1);
 }
 
-.notion *,
-.notion *:focus {
-  outline: 0;
+/* Focus visible styles for keyboard navigation (WCAG 2.4.7) */
+.notion *:focus-visible {
+  outline: 2px solid var(--select-color-0);
+  outline-offset: 2px;
 }
 
 /* App container */
