@@ -1258,6 +1258,80 @@
   height: 180px;
 }
 
+/* List View */
+.notion-list-collection {
+  width: 100%;
+  max-width: 100%;
+  align-self: center;
+}
+
+.notion-list-view {
+  position: relative;
+  padding-left: 0;
+  transition: padding 200ms ease-out;
+  max-width: 100%;
+}
+
+.notion-list-body {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--fg-color-1);
+  padding-top: 8px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.notion-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px;
+  margin: 1px 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 4px;
+  transition: background-color 100ms ease-in;
+}
+
+.notion-list-item:hover {
+  background-color: var(--bg-color-1);
+}
+
+.notion-list-item-title {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  line-height: 1.3;
+  gap: 6px;
+}
+
+.notion-list-item-title .notion-page-icon {
+  flex-shrink: 0;
+}
+
+.notion-list-item-body {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  gap: 8px;
+}
+
+.notion-list-item-property {
+  margin-left: 14px;
+  font-size: 14px;
+  color: var(--fg-color-3);
+}
+
+.notion-list-item-property .notion-property-select-item {
+  font-size: 12px;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 640px) {
   .notion-gallery-grid-size-small,

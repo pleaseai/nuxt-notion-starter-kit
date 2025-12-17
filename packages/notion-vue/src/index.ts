@@ -5,6 +5,7 @@ export { default as CollectionGroup } from './components/collection/CollectionGr
 export { default as CollectionProperty } from './components/collection/CollectionProperty.vue'
 export { default as CollectionViewBoard } from './components/collection/CollectionViewBoard.vue'
 export { default as CollectionViewGallery } from './components/collection/CollectionViewGallery.vue'
+export { default as CollectionViewList } from './components/collection/CollectionViewList.vue'
 export { default as NestedFormLink } from './components/collection/NestedFormLink.vue'
 // Icons
 export { default as EmptyIcon } from './components/icons/EmptyIcon.vue'
@@ -56,6 +57,7 @@ export type {
   CollectionPropertyConfig,
   CollectionViewProps,
   GalleryCollectionViewFormat,
+  ListCollectionViewFormat,
 } from './types/collection'
 
 // Utils

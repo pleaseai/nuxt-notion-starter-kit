@@ -35,8 +35,8 @@ Quick reference for features not yet implemented in nuxt-notion-starter-kit.
   - Implemented: `packages/notion-vue/src/components/collection/CollectionViewGallery.vue`
 - [x] **Board View** - Kanban-style view
   - Implemented: `packages/notion-vue/src/components/collection/CollectionViewBoard.vue`
-- [ ] **List View** - Simplified list layout
-  - Ref: `ref/react-notion-x/packages/react-notion-x/src/third-party/collection-view-list.tsx`
+- [x] **List View** - Simplified list layout
+  - Implemented: `packages/notion-vue/src/components/collection/CollectionViewList.vue`
 
 ### Components
 - [x] **Page Aside (TOC)** - Table of contents sidebar
@@ -108,9 +108,11 @@ Quick reference for features not yet implemented in nuxt-notion-starter-kit.
 - [x] NotionBlock - All basic block types
 - [x] NotionText - All text decorations
 - [x] NotionAsset - Image, Video, Embed, Bookmark
-- [x] NotionCollection - Table view (MVP) + Gallery view + Board view
+- [x] NotionCollection - Table view (MVP) + Gallery view + Board view + List view
 - [x] NotionCode - Syntax highlighting with Shiki
 - [x] CollectionViewGallery - Gallery view with cover images and grouping
+- [x] CollectionViewBoard - Board (Kanban) view with columns
+- [x] CollectionViewList - List view with title and properties
 
 ### Layout Components
 - [x] NotionHeader - Site navigation header

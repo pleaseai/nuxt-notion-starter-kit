@@ -97,6 +97,15 @@ export interface BoardCollectionViewFormat {
 }
 
 /**
+ * List-specific collection view format
+ */
+export interface ListCollectionViewFormat {
+  list_properties?: CollectionPropertyConfig[]
+  collection_group_by?: PropertyID
+  collection_groups?: CollectionGroupConfig[]
+}
+
+/**
  * Processed board column data for rendering
  */
 export interface BoardColumnData {
