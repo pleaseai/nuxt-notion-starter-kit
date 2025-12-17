@@ -3,9 +3,11 @@ import type { Block, PageBlock } from 'notion-types'
 import type { NotionContext, NotionRendererProps } from '../types'
 import { getBlockTitle } from 'notion-utils'
 import { computed, reactive, watchEffect } from 'vue'
+import { provideImageLightbox } from '../composables/useImageLightbox'
 import { provideNotionContext } from '../composables/useNotionContext'
 import { useTableOfContents } from '../composables/useTableOfContents'
 import { createMapPageUrl, cs, mapImageUrl as defaultMapImageUrl } from '../utils'
+import ImageLightbox from './ImageLightbox.vue'
 import NotionBlock from './NotionBlock.vue'
 import NotionCollection from './NotionCollection.vue'
 import NotionTOC from './NotionTOC.vue'
@@ -43,6 +45,9 @@ watchEffect(() => {
   Object.assign(reactiveContext, context.value)
 })
 provideNotionContext(reactiveContext)
+
+// Provide image lightbox context for descendant components
+provideImageLightbox()
 
 // Get root block
 const rootBlock = computed<Block | undefined>(() => {
@@ -189,6 +194,9 @@ const showTocSidebar = computed(() => {
       <!-- Slot for footer -->
       <slot name="footer" />
     </main>
+
+    <!-- Image Lightbox (rendered via Teleport to body) -->
+    <ImageLightbox />
   </div>
 </template>
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Block, BookmarkBlock, EmbedBlock, ImageBlock, VideoBlock } from 'notion-types'
 import { computed } from 'vue'
+import { useImageLightbox } from '../composables/useImageLightbox'
 import { useNotionContext } from '../composables/useNotionContext'
 import NotionText from './NotionText.vue'
 
@@ -9,6 +10,7 @@ const props = defineProps<{
 }>()
 
 const { mapImageUrl } = useNotionContext()
+const lightbox = useImageLightbox()
 
 const blockType = computed(() => props.block?.type)
 
@@ -88,6 +90,14 @@ const imageFormat = computed(() => {
     blockPreserveScale: format?.block_preserve_scale,
   }
 })
+
+// Handle image click to open lightbox
+function handleImageClick() {
+  if (lightbox && imageUrl.value) {
+    const alt = caption.value?.[0]?.[0] || ''
+    lightbox.open(imageUrl.value, alt)
+  }
+}
 </script>
 
 <template>
@@ -99,11 +109,13 @@ const imageFormat = computed(() => {
         :src="imageUrl"
         :alt="caption?.[0]?.[0] || ''"
         class="notion-image"
+        :class="{ 'notion-image-zoomable': lightbox }"
         :style="{
           width: imageFormat.blockFullWidth ? '100%' : (imageFormat.width ? `${imageFormat.width}px` : undefined),
           aspectRatio: imageFormat.aspectRatio ? String(imageFormat.aspectRatio) : undefined,
         }"
         loading="lazy"
+        @click="handleImageClick"
       >
     </div>
 
@@ -190,6 +202,10 @@ const imageFormat = computed(() => {
   height: auto;
   display: block;
   object-fit: contain;
+}
+
+.notion-image-zoomable {
+  cursor: zoom-in;
 }
 
 .notion-video-iframe,
