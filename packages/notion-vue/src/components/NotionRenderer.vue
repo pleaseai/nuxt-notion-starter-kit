@@ -86,11 +86,11 @@ function isCollectionView(block: Block): boolean {
   return block.type === 'collection_view' || block.type === 'collection_view_page'
 }
 
-// Table of Contents
+// Table of Contents - pass getters for reactivity
 const { hasToc } = useTableOfContents(
-  props.recordMap,
-  rootPageBlock.value,
-  props.minTableOfContentsItems,
+  () => props.recordMap,
+  rootPageBlock,
+  () => props.minTableOfContentsItems,
 )
 
 // Show TOC sidebar when enabled and has enough entries

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ExtendedRecordMap, PageBlock } from 'notion-types'
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import { useTableOfContents } from '../composables/useTableOfContents'
 import { cs } from '../utils'
 
@@ -12,18 +12,11 @@ const props = withDefaults(defineProps<{
   minItems: 3,
 })
 
+// Pass getters for reactivity with MaybeRefOrGetter pattern
 const { entries, activeSection, hasToc } = useTableOfContents(
-  props.recordMap,
-  props.pageBlock,
-  props.minItems,
-)
-
-// Re-initialize when pageBlock changes (reactive)
-watch(
+  () => props.recordMap,
   () => props.pageBlock,
-  () => {
-    // The composable will recompute entries automatically
-  },
+  () => props.minItems,
 )
 
 const hasEntries = computed(() => hasToc.value && entries.value.length > 0)

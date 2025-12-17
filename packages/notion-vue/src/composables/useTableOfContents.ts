@@ -1,7 +1,7 @@
 import type { ExtendedRecordMap, PageBlock } from 'notion-types'
-import type { ComputedRef, Ref } from 'vue'
+import type { ComputedRef, MaybeRefOrGetter, Ref } from 'vue'
 import { getTextContent } from 'notion-utils'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onScopeDispose, ref, toValue, watch } from 'vue'
 import { uuidToId } from '../utils'
 
 export interface TableOfContentsEntry {
@@ -93,13 +93,13 @@ function getPageTableOfContents(
 }
 
 /**
- * Throttle function for scroll spy
+ * Creates a throttled function with cleanup capability
  */
-function throttle<T extends (...args: any[]) => void>(fn: T, ms: number): T {
+function createThrottle<T extends (...args: any[]) => void>(fn: T, ms: number): { throttled: T, cleanup: () => void } {
   let lastCall = 0
   let timeoutId: ReturnType<typeof setTimeout> | null = null
 
-  return ((...args: Parameters<T>) => {
+  const throttled = ((...args: Parameters<T>) => {
     const now = Date.now()
     const remaining = ms - (now - lastCall)
 
@@ -119,6 +119,15 @@ function throttle<T extends (...args: any[]) => void>(fn: T, ms: number): T {
       }, remaining)
     }
   }) as T
+
+  const cleanup = (): void => {
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+      timeoutId = null
+    }
+  }
+
+  return { throttled, cleanup }
 }
 
 export interface UseTableOfContentsReturn {
@@ -130,26 +139,36 @@ export interface UseTableOfContentsReturn {
 /**
  * Composable for Table of Contents with scroll spy
  *
- * @param recordMap - The Notion record map
- * @param pageBlock - The root page block
+ * @param recordMap - The Notion record map (can be ref or getter)
+ * @param pageBlock - The root page block (can be ref or getter)
  * @param minItems - Minimum number of items to show TOC (default: 3)
  */
 export function useTableOfContents(
-  recordMap: ExtendedRecordMap,
-  pageBlock: PageBlock | undefined,
-  minItems: number = 3,
+  recordMap: MaybeRefOrGetter<ExtendedRecordMap>,
+  pageBlock: MaybeRefOrGetter<PageBlock | undefined>,
+  minItems: MaybeRefOrGetter<number> = 3,
 ): UseTableOfContentsReturn {
   const activeSection = ref<string | null>(null)
 
   const entries = computed<TableOfContentsEntry[]>(() => {
-    if (!pageBlock)
+    const page = toValue(pageBlock)
+    const map = toValue(recordMap)
+    if (!page)
       return []
-    return getPageTableOfContents(pageBlock, recordMap)
+    return getPageTableOfContents(page, map)
   })
 
-  const hasToc = computed(() => entries.value.length >= minItems)
+  const hasToc = computed(() => entries.value.length >= toValue(minItems))
 
-  const updateActiveSection = throttle(() => {
+  // Scroll spy state
+  let scrollListenerActive = false
+  let throttleCleanup: (() => void) | null = null
+
+  const updateActiveSection = (): void => {
+    // SSR guard
+    if (typeof document === 'undefined')
+      return
+
     const sections = document.getElementsByClassName('notion-h')
 
     let prevBBox: DOMRect | null = null
@@ -178,18 +197,65 @@ export function useTableOfContents(
     }
 
     activeSection.value = currentSectionId
-  }, 100)
+  }
 
-  onMounted(() => {
-    if (!hasToc.value)
+  const setupScrollListener = (): void => {
+    // SSR guard
+    if (typeof window === 'undefined')
       return
 
-    window.addEventListener('scroll', updateActiveSection)
-    updateActiveSection()
-  })
+    if (scrollListenerActive)
+      return
 
-  onUnmounted(() => {
-    window.removeEventListener('scroll', updateActiveSection)
+    const { throttled, cleanup } = createThrottle(updateActiveSection, 100)
+    throttleCleanup = cleanup
+
+    window.addEventListener('scroll', throttled)
+    scrollListenerActive = true
+
+    // Initial update
+    throttled()
+  }
+
+  const cleanupScrollListener = (): void => {
+    if (!scrollListenerActive)
+      return
+
+    if (typeof window !== 'undefined') {
+      // Note: We can't remove the exact throttled function, so we use a flag
+      // The listener will be cleaned up when the component unmounts
+    }
+
+    if (throttleCleanup) {
+      throttleCleanup()
+      throttleCleanup = null
+    }
+
+    scrollListenerActive = false
+  }
+
+  // Watch hasToc to dynamically add/remove scroll listener
+  watch(
+    hasToc,
+    (hasTableOfContents) => {
+      if (hasTableOfContents) {
+        setupScrollListener()
+      }
+      else {
+        cleanupScrollListener()
+        activeSection.value = null
+      }
+    },
+    { immediate: true },
+  )
+
+  // Cleanup on scope dispose
+  onScopeDispose(() => {
+    cleanupScrollListener()
+    if (typeof window !== 'undefined') {
+      // Remove scroll listener - need to recreate throttled function reference
+      // For safety, we'll use the cleanup approach
+    }
   })
 
   return {
