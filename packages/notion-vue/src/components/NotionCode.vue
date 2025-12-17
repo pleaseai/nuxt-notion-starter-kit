@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import type { CodeBlock } from 'notion-types'
+import type { Highlighter } from 'shiki'
 import { getBlockTitle } from 'notion-utils'
-import { createHighlighter, type Highlighter } from 'shiki'
+import { createHighlighter } from 'shiki'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useNotionContext } from '../composables/useNotionContext'
 import NotionText from './NotionText.vue'
 
@@ -13,7 +14,7 @@ const props = withDefaults(
   }>(),
   {
     defaultLanguage: 'typescript',
-  }
+  },
 )
 
 const { recordMap } = useNotionContext()
@@ -81,7 +82,8 @@ async function initHighlighter() {
       ],
     })
     highlight()
-  } catch (err) {
+  }
+  catch (err) {
     console.error('[NotionCode] Shiki highlighter initialization failed:', {
       error: err,
       language: language.value,
@@ -108,7 +110,8 @@ function highlight() {
         dark: 'github-dark',
       },
     })
-  } catch (err) {
+  }
+  catch (err) {
     console.error('[NotionCode] Shiki highlight failed:', {
       error: err,
       language: language.value,
@@ -140,7 +143,8 @@ async function copyToClipboard() {
     copyTimeout = setTimeout(() => {
       isCopied.value = false
     }, 1200)
-  } catch (err) {
+  }
+  catch (err) {
     console.error('[NotionCode] Clipboard copy failed:', err)
     copyError.value = true
     isCopied.value = false
