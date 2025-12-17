@@ -6,6 +6,7 @@ import { useCollectionData } from '../composables/useCollectionData'
 import { useNotionContext } from '../composables/useNotionContext'
 import CollectionViewBoard from './collection/CollectionViewBoard.vue'
 import CollectionViewGallery from './collection/CollectionViewGallery.vue'
+import CollectionViewList from './collection/CollectionViewList.vue'
 
 const props = defineProps<{
   block: Block
@@ -131,6 +132,14 @@ function isTitle(columnId: string): boolean {
     <!-- Board View -->
     <CollectionViewBoard
       v-else-if="viewType === 'board' && collectionView && collectionData"
+      :collection="collection"
+      :collection-view="collectionView"
+      :collection-data="collectionData"
+    />
+
+    <!-- List View -->
+    <CollectionViewList
+      v-else-if="viewType === 'list' && collectionView && collectionData"
       :collection="collection"
       :collection-view="collectionView"
       :collection-data="collectionData"
