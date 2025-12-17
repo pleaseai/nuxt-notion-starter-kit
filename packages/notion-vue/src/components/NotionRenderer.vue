@@ -2,11 +2,13 @@
 import type { Block, PageBlock } from 'notion-types'
 import type { NotionContext, NotionRendererProps } from '../types'
 import { getBlockTitle } from 'notion-utils'
-import { computed } from 'vue'
+import { computed, reactive, watchEffect } from 'vue'
 import { provideNotionContext } from '../composables/useNotionContext'
+import { useTableOfContents } from '../composables/useTableOfContents'
 import { createMapPageUrl, cs, mapImageUrl as defaultMapImageUrl } from '../utils'
 import NotionBlock from './NotionBlock.vue'
 import NotionCollection from './NotionCollection.vue'
+import NotionTOC from './NotionTOC.vue'
 
 const props = withDefaults(defineProps<NotionRendererProps>(), {
   darkMode: false,
@@ -16,7 +18,7 @@ const props = withDefaults(defineProps<NotionRendererProps>(), {
   defaultPageCoverPosition: 0.5,
 })
 
-// Create context
+// Create reactive context that updates when props change
 const context = computed<NotionContext>(() => ({
   recordMap: props.recordMap,
   components: props.components || {},
@@ -33,7 +35,12 @@ const context = computed<NotionContext>(() => ({
   defaultPageCoverPosition: props.defaultPageCoverPosition,
 }))
 
-provideNotionContext(context.value)
+// Provide a reactive context object that stays in sync with props
+const reactiveContext = reactive<NotionContext>({} as NotionContext)
+watchEffect(() => {
+  Object.assign(reactiveContext, context.value)
+})
+provideNotionContext(reactiveContext)
 
 // Get root block
 const rootBlock = computed<Block | undefined>(() => {
@@ -83,6 +90,18 @@ function getChildBlock(childId: string): Block | undefined {
 function isCollectionView(block: Block): boolean {
   return block.type === 'collection_view' || block.type === 'collection_view_page'
 }
+
+// Table of Contents - pass getters for reactivity
+const { hasToc } = useTableOfContents(
+  () => props.recordMap,
+  rootPageBlock,
+  () => props.minTableOfContentsItems,
+)
+
+// Show TOC sidebar when enabled and has enough entries
+const showTocSidebar = computed(() => {
+  return props.showTableOfContents && hasToc.value && !rootPageBlock.value?.format?.page_full_width
+})
 </script>
 
 <template>
@@ -133,7 +152,7 @@ function isCollectionView(block: Block): boolean {
       <slot name="header" />
 
       <!-- Page Content -->
-      <div class="notion-page-content">
+      <div :class="cs('notion-page-content', showTocSidebar && 'notion-page-content-has-aside')">
         <article class="notion-page-content-inner">
           <template v-for="childId in childBlocks" :key="childId">
             <!-- Collection View -->
@@ -150,8 +169,17 @@ function isCollectionView(block: Block): boolean {
           </template>
         </article>
 
-        <!-- Slot for aside -->
-        <aside v-if="$slots.aside" class="notion-aside">
+        <!-- Table of Contents Aside -->
+        <aside v-if="showTocSidebar" class="notion-aside">
+          <NotionTOC
+            :record-map="recordMap"
+            :page-block="rootPageBlock"
+            :min-items="minTableOfContentsItems"
+          />
+        </aside>
+
+        <!-- Slot for custom aside (fallback if no TOC) -->
+        <aside v-else-if="$slots.aside" class="notion-aside">
           <slot name="aside" />
         </aside>
       </div>

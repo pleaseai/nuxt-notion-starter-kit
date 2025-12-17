@@ -39,8 +39,8 @@ Quick reference for features not yet implemented in nuxt-notion-starter-kit.
   - Ref: `ref/react-notion-x/packages/react-notion-x/src/third-party/collection-view-list.tsx`
 
 ### Components
-- [ ] **Page Aside (TOC)** - Table of contents sidebar
-  - Ref: `ref/nextjs-notion-starter-kit/components/PageAside.tsx`
+- [x] **Page Aside (TOC)** - Table of contents sidebar
+  - Implemented: `packages/notion-vue/src/components/NotionTOC.vue`
 - [ ] **Loading States** - Page loading components
   - Ref: `ref/nextjs-notion-starter-kit/components/Loading.tsx`
   - Ref: `ref/nextjs-notion-starter-kit/components/LoadingIcon.tsx`

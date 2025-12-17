@@ -2,10 +2,15 @@
 import type { Block, Decoration } from 'notion-types'
 import { computed, onMounted, ref } from 'vue'
 import { useNotionContext } from '../composables/useNotionContext'
-import { cs, getBlockColorClass, hasBlockChildren } from '../utils'
+import { cs, getBlockColorClass, hasBlockChildren, uuidToId } from '../utils'
 import NotionAsset from './NotionAsset.vue'
 import NotionCode from './NotionCode.vue'
 import NotionText from './NotionText.vue'
+
+const props = defineProps<{
+  block: Block
+  level?: number
+}>()
 
 // Known block types that are handled
 const KNOWN_BLOCK_TYPES = new Set([
@@ -30,17 +35,14 @@ const KNOWN_BLOCK_TYPES = new Set([
   'page',
 ])
 
-const props = defineProps<{
-  block: Block
-  level?: number
-}>()
-
 const { recordMap, mapPageUrl } = useNotionContext()
 
 const isToggleOpen = ref(false)
 
 const blockId = computed(() => props.block?.id)
 const blockType = computed(() => props.block?.type)
+// Normalized header ID for scroll spy (without dashes)
+const headerId = computed(() => blockId.value ? uuidToId(blockId.value) : undefined)
 const blockColor = computed(() => (props.block as any)?.format?.block_color)
 const colorClass = computed(() => getBlockColorClass(blockColor.value))
 
@@ -120,7 +122,8 @@ onMounted(() => {
     <!-- Header blocks -->
     <h2
       v-else-if="blockType === 'header'"
-      :id="blockId"
+      :id="headerId"
+      :data-id="headerId"
       :class="cs('notion-h notion-h1', colorClass)"
     >
       <NotionText v-if="title" :value="title" :block="block" />
@@ -128,7 +131,8 @@ onMounted(() => {
 
     <h3
       v-else-if="blockType === 'sub_header'"
-      :id="blockId"
+      :id="headerId"
+      :data-id="headerId"
       :class="cs('notion-h notion-h2', colorClass)"
     >
       <NotionText v-if="title" :value="title" :block="block" />
@@ -136,7 +140,8 @@ onMounted(() => {
 
     <h4
       v-else-if="blockType === 'sub_sub_header'"
-      :id="blockId"
+      :id="headerId"
+      :data-id="headerId"
       :class="cs('notion-h notion-h3', colorClass)"
     >
       <NotionText v-if="title" :value="title" :block="block" />

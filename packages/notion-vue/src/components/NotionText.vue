@@ -49,7 +49,8 @@ function renderDecoration(item: DecorationItem): VNode {
         break
       case 'a': {
         const href = value as string | undefined
-        if (!href) break
+        if (!href)
+          break
         const isInternal = href.startsWith('/')
 
         if (isInternal && components.Link) {
