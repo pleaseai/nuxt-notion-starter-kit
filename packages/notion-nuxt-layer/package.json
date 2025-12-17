@@ -1,0 +1,23 @@
+{
+  "name": "@pleaseai/notion-nuxt-layer",
+  "version": "0.1.0",
+  "description": "Nuxt layer for building Notion-powered websites",
+  "type": "module",
+  "main": "./nuxt.config.ts",
+  "files": [
+    "app",
+    "server",
+    "nuxt.config.ts"
+  ],
+  "peerDependencies": {
+    "nuxt": "^3.15.0 || ^4.0.0"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^3.20.0",
+    "@nuxtjs/color-mode": "^3.5.2",
+    "@pleaseai/notion-vue": "workspace:*",
+    "notion-client": "^7.1.4",
+    "notion-types": "^7.1.4",
+    "notion-utils": "^7.1.4"
+  }
+}

@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { NotionRenderer } from '@pleaseai/notion-vue'
-import '@pleaseai/notion-vue/styles.css'
-import { getBlockTitle } from 'notion-utils'
-import siteConfig from '../../site.config'
+import { NotionRenderer, getBlockTitle } from '@pleaseai/notion-vue'
+
+const config = useRuntimeConfig()
+const siteConfig = config.public.siteConfig as {
+  rootNotionPageId: string
+  name: string
+  description?: string
+}
 
 const route = useRoute()
 const slug = computed(() => {

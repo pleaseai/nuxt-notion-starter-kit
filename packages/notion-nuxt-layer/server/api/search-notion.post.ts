@@ -1,9 +1,14 @@
 import type { SearchParams } from 'notion-types'
 import { search } from '../utils/notion'
-import siteConfig from '../../site.config'
+
+interface SiteConfig {
+  rootNotionPageId: string
+}
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<{ query: string }>(event)
+  const config = useRuntimeConfig()
+  const siteConfig = config.public.siteConfig as SiteConfig
 
   if (!body?.query) {
     throw createError({

@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { NotionRenderer } from '@pleaseai/notion-vue'
-import '@pleaseai/notion-vue/styles.css'
-import siteConfig from '../../site.config'
+
+const config = useRuntimeConfig()
+const siteConfig = config.public.siteConfig as {
+  rootNotionPageId: string
+  name: string
+  description?: string
+}
 
 const { data: pageData, error } = await useAsyncData(
   'index-page',

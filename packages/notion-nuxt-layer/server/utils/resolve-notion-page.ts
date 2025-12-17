@@ -1,7 +1,6 @@
 import type { ExtendedRecordMap } from 'notion-types'
 import { parsePageId } from 'notion-utils'
 import { getPage } from './notion'
-import siteConfig from '../../site.config'
 
 export interface PageProps {
   recordMap: ExtendedRecordMap
@@ -19,9 +18,17 @@ export interface PageError {
   }
 }
 
+interface SiteConfig {
+  rootNotionPageId: string
+  pageUrlOverrides?: Record<string, string> | null
+}
+
 export async function resolveNotionPage(
   rawPageId?: string
 ): Promise<PageProps | PageError> {
+  const config = useRuntimeConfig()
+  const siteConfig = config.public.siteConfig as SiteConfig
+
   let pageId: string | undefined
   let recordMap: ExtendedRecordMap
 
