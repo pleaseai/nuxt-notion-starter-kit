@@ -18,6 +18,13 @@ export default defineConfig({
       formats: ['es'],
       fileName: 'index',
     },
+    minify: 'terser',
+    terserOptions: {
+      mangle: {
+        // Reserve Vue's 'h' function name to avoid conflicts
+        reserved: ['h'],
+      },
+    },
     rollupOptions: {
       external: ['vue', 'notion-types', 'notion-utils'],
       output: {
