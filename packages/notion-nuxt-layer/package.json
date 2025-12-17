@@ -22,5 +22,8 @@
     "notion-client": "^7.1.4",
     "notion-types": "^7.1.4",
     "notion-utils": "^7.1.4"
+  },
+  "devDependencies": {
+    "@nuxt/icon": "^2.1.1"
   }
 }

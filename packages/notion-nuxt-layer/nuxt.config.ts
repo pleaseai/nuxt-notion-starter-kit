@@ -1,9 +1,6 @@
 export default defineNuxtConfig({
-  modules: ['@nuxtjs/color-mode', '@nuxt/eslint'],
+  modules: ['@nuxtjs/color-mode', '@nuxt/eslint', '@nuxt/icon'],
   compatibilityDate: '2025-07-22',
-  future: {
-    compatibilityVersion: 4,
-  },
   css: [
     '@pleaseai/notion-vue/styles.css',
   ],
