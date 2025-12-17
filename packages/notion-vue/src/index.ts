@@ -4,6 +4,7 @@ export { default as CollectionCardCoverComponent } from './components/collection
 export { default as CollectionGroup } from './components/collection/CollectionGroup.vue'
 export { default as CollectionProperty } from './components/collection/CollectionProperty.vue'
 export { default as CollectionViewGallery } from './components/collection/CollectionViewGallery.vue'
+export { default as NestedFormLink } from './components/collection/NestedFormLink.vue'
 // Components
 export { default as NotionAsset } from './components/NotionAsset.vue'
 export { default as NotionBlock } from './components/NotionBlock.vue'
@@ -20,6 +21,8 @@ export { useCollectionData } from './composables/useCollectionData'
 export type { UseCollectionDataOptions, UseCollectionDataReturn } from './composables/useCollectionData'
 export { useCollectionGroups } from './composables/useCollectionGroups'
 export type { UseCollectionGroupsOptions, UseCollectionGroupsReturn } from './composables/useCollectionGroups'
+export { provideNestedLinkContext, useNestedLinkContext } from './composables/useNestedLinkContext'
+export type { NestedLinkContext } from './composables/useNestedLinkContext'
 // Composables
 export { provideNotionContext, useNotionContext } from './composables/useNotionContext'
 export { useTableOfContents } from './composables/useTableOfContents'

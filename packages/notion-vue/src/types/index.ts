@@ -29,6 +29,8 @@ export interface NotionContext {
   defaultPageIcon?: string
   defaultPageCover?: string
   defaultPageCoverPosition: number
+  // When true, collection cards link to URL property value instead of page
+  isLinkCollectionToUrlProperty: boolean
 }
 
 export interface NotionRendererProps {
@@ -45,6 +47,8 @@ export interface NotionRendererProps {
   defaultPageIcon?: string
   defaultPageCover?: string
   defaultPageCoverPosition?: number
+  // When true, collection cards link to URL property value instead of page
+  isLinkCollectionToUrlProperty?: boolean
 }
 
 export type { Block, ExtendedRecordMap } from 'notion-types'

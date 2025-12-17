@@ -7,6 +7,7 @@ import type {
   CollectionPropertyConfig,
 } from '../../types/collection'
 import { computed } from 'vue'
+import { provideNestedLinkContext } from '../../composables/useNestedLinkContext'
 import { useNotionContext } from '../../composables/useNotionContext'
 import CardCover from './CollectionCardCover.vue'
 import CollectionProperty from './CollectionProperty.vue'
@@ -20,9 +21,59 @@ const props = defineProps<{
   properties?: CollectionPropertyConfig[]
 }>()
 
-const { mapPageUrl } = useNotionContext()
+const { mapPageUrl, isLinkCollectionToUrlProperty } = useNotionContext()
 
-const pageUrl = computed(() => mapPageUrl(props.block.id))
+// Provide nested link context - indicates we're inside a card
+provideNestedLinkContext({ isInsideCard: true })
+
+/**
+ * Find URL from visible URL-type properties when isLinkCollectionToUrlProperty is enabled.
+ */
+const urlPropertyValue = computed<string | null>(() => {
+  if (!isLinkCollectionToUrlProperty || !props.properties) {
+    return null
+  }
+
+  // Find visible URL-type properties
+  const urlProperties = props.properties
+    .filter((p) => {
+      if (!p.visible || p.property === 'title')
+        return false
+      const schema = props.collection.schema[p.property]
+      return schema?.type === 'url'
+    })
+    .map((p) => {
+      const data = (props.block.properties as Record<string, unknown>)?.[p.property]
+      return data
+    })
+    .filter(Boolean)
+
+  // Get the first URL value
+  if (urlProperties.length > 0) {
+    const urlData = urlProperties[0] as unknown[][]
+    if (urlData?.[0]?.[0]) {
+      return urlData[0][0] as string
+    }
+  }
+
+  return null
+})
+
+/**
+ * Determine the link URL:
+ * - If isLinkCollectionToUrlProperty and URL property exists, use that URL
+ * - Otherwise, use the page URL
+ */
+const cardUrl = computed(() => {
+  return urlPropertyValue.value || mapPageUrl(props.block.id)
+})
+
+/**
+ * Determine if the link is external (URL property)
+ */
+const isExternalLink = computed(() => {
+  return !!urlPropertyValue.value
+})
 
 const showCover = computed(() => props.cover?.type !== 'none')
 
@@ -46,7 +97,9 @@ const visibleProperties = computed(() => {
 
 <template>
   <a
-    :href="pageUrl"
+    :href="cardUrl"
+    :target="isExternalLink ? '_blank' : undefined"
+    :rel="isExternalLink ? 'noopener noreferrer' : undefined"
     class="notion-collection-card"
     :class="`notion-collection-card-size-${coverSize}`"
   >

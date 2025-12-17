@@ -3,6 +3,7 @@ import type { Block, Collection, CollectionPropertySchema, Decoration } from 'no
 import { getTextContent } from 'notion-utils'
 import { computed } from 'vue'
 import NotionText from '../NotionText.vue'
+import NestedFormLink from './NestedFormLink.vue'
 
 const props = defineProps<{
   schema: CollectionPropertySchema
@@ -153,37 +154,29 @@ const selectOptions = computed(() => {
 
     <!-- URL -->
     <template v-else-if="schema.type === 'url'">
-      <a
+      <NestedFormLink
         v-if="textContent"
         :href="textContent as string"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="notion-link"
-      >
-        {{ inline ? getHostname(textContent as string) : textContent }}
-      </a>
+        :label="inline ? getHostname(textContent as string) : (textContent as string)"
+      />
     </template>
 
     <!-- Email -->
     <template v-else-if="schema.type === 'email'">
-      <a
+      <NestedFormLink
         v-if="textContent"
         :href="`mailto:${textContent}`"
-        class="notion-link"
-      >
-        {{ textContent }}
-      </a>
+        :label="textContent as string"
+      />
     </template>
 
     <!-- Phone -->
     <template v-else-if="schema.type === 'phone_number'">
-      <a
+      <NestedFormLink
         v-if="textContent"
         :href="`tel:${textContent}`"
-        class="notion-link"
-      >
-        {{ textContent }}
-      </a>
+        :label="textContent as string"
+      />
     </template>
 
     <!-- Default: plain text -->
