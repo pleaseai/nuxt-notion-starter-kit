@@ -3,19 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@9.15.1",
   "engines": {
     "node": ">=20"
   },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
-    "dev": "pnpm --filter @pleaseai/nuxt-notion-web dev",
-    "build": "pnpm --filter @pleaseai/notion-vue build && pnpm --filter @pleaseai/nuxt-notion-web build",
-    "build:vue": "pnpm --filter @pleaseai/notion-vue build",
-    "build:web": "pnpm --filter @pleaseai/nuxt-notion-web build",
-    "preview": "pnpm --filter @pleaseai/nuxt-notion-web preview",
-    "lint": "pnpm -r lint",
-    "type-check": "pnpm -r type-check",
-    "clean": "pnpm -r clean"
+    "dev": "bun run --filter @pleaseai/nuxt-notion-web dev",
+    "build": "bun run --filter @pleaseai/notion-vue build && bun run --filter @pleaseai/nuxt-notion-web build",
+    "build:vue": "bun run --filter @pleaseai/notion-vue build",
+    "build:web": "bun run --filter @pleaseai/nuxt-notion-web build",
+    "preview": "bun run --filter @pleaseai/nuxt-notion-web preview",
+    "lint": "bun run --filter '*' lint",
+    "type-check": "bun run --filter '*' type-check",
+    "clean": "bun run --filter '*' clean"
   },
   "devDependencies": {
     "typescript": "^5.7.2"

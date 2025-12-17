@@ -48,13 +48,13 @@ This project is a Nuxt-based implementation inspired by [nextjs-notion-starter-k
 
 ### Prerequisites
 
-- Node.js 18+
-- pnpm 9+
+- Node.js 20+
+- Bun 1.0+
 
 ### Installation
 
 ```bash
-pnpm install
+bun install
 ```
 
 ### Configuration
