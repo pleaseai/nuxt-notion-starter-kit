@@ -1,5 +1,6 @@
-import { inject, provide, type InjectionKey } from 'vue'
+import type { InjectionKey } from 'vue'
 import type { NotionContext } from '../types'
+import { inject, provide } from 'vue'
 
 const NotionContextKey: InjectionKey<NotionContext> = Symbol('NotionContext')
 

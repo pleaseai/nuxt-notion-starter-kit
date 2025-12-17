@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, h, type VNode } from 'vue'
-import type { Decoration, Block } from 'notion-types'
+import type { Block, Decoration } from 'notion-types'
+import type { VNode } from 'vue'
+import { computed, h } from 'vue'
 import { useNotionContext } from '../composables/useNotionContext'
 
 const props = defineProps<{
@@ -52,7 +53,8 @@ function renderDecoration(item: DecorationItem): VNode {
 
         if (isInternal && components.Link) {
           content = h(components.Link, { to: href, ...props.linkProps }, () => content)
-        } else {
+        }
+        else {
           content = h('a', {
             href,
             class: 'notion-link',
@@ -70,7 +72,8 @@ function renderDecoration(item: DecorationItem): VNode {
 
         if (components.Link) {
           content = h(components.Link, { to: href, class: 'notion-page-link' }, () => content)
-        } else {
+        }
+        else {
           content = h('a', { href, class: 'notion-page-link' }, content)
         }
         break

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import type { Block, CollectionViewBlock, Collection, CollectionPropertySchema } from 'notion-types'
+import type { Block, Collection, CollectionPropertySchema, CollectionViewBlock } from 'notion-types'
 import { getTextContent } from 'notion-utils'
+import { computed } from 'vue'
 import { useNotionContext } from '../composables/useNotionContext'
 
 const props = defineProps<{
@@ -16,12 +16,14 @@ const collectionId = computed(() => {
 })
 
 const collection = computed<Collection | undefined>(() => {
-  if (!collectionId.value) return undefined
+  if (!collectionId.value)
+    return undefined
   return recordMap.collection?.[collectionId.value]?.value
 })
 
 const collectionName = computed(() => {
-  if (!collection.value) return ''
+  if (!collection.value)
+    return ''
   return getTextContent(collection.value.name) || 'Untitled'
 })
 
@@ -36,7 +38,8 @@ const visibleColumns = computed(() => {
   for (const [key, value] of Object.entries(schema.value)) {
     if (value.type === 'title') {
       cols.unshift(key)
-    } else {
+    }
+    else {
       cols.push(key)
     }
   }
@@ -54,7 +57,8 @@ const rows = computed<RowData[]>(() => {
   const block = props.block as CollectionViewBlock
   const viewId = block.view_ids?.[0]
 
-  if (!viewId || !collectionId.value) return []
+  if (!viewId || !collectionId.value)
+    return []
 
   // Get collection query results
   const query = recordMap.collection_query?.[collectionId.value]?.[viewId]
@@ -62,7 +66,8 @@ const rows = computed<RowData[]>(() => {
 
   return blockIds.map((blockId: string) => {
     const rowBlock = recordMap.block[blockId]?.value
-    if (!rowBlock) return null
+    if (!rowBlock)
+      return null
 
     const properties = (rowBlock as any).properties || {}
     return {
@@ -79,7 +84,8 @@ function getColumnHeader(columnId: string): string {
 
 function getCellValue(row: RowData, columnId: string): string {
   const value = row.properties[columnId]
-  if (!value) return ''
+  if (!value)
+    return ''
 
   // Handle different property types
   const propertyType = schema.value[columnId]?.type
@@ -95,12 +101,13 @@ function getCellValue(row: RowData, columnId: string): string {
       return (value as any)?.[0]?.[0] || ''
     case 'multi_select':
       return ((value as any)?.[0]?.[0] || '').split(',').join(', ')
-    case 'date':
+    case 'date': {
       const dateValue = (value as any)?.[0]?.[1]?.[0]?.[1]
       if (dateValue?.start_date) {
         return dateValue.start_date
       }
       return ''
+    }
     case 'checkbox':
       return (value as any)?.[0]?.[0] === 'Yes' ? '✓' : ''
     case 'url':
@@ -120,7 +127,9 @@ function isTitle(columnId: string): boolean {
 <template>
   <div v-if="collection" class="notion-collection">
     <div class="notion-collection-header">
-      <h3 class="notion-collection-title">{{ collectionName }}</h3>
+      <h3 class="notion-collection-title">
+        {{ collectionName }}
+      </h3>
     </div>
 
     <div class="notion-table-wrapper">

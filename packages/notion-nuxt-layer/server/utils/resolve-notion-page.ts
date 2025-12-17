@@ -24,7 +24,7 @@ interface SiteConfig {
 }
 
 export async function resolveNotionPage(
-  rawPageId?: string
+  rawPageId?: string,
 ): Promise<PageProps | PageError> {
   const config = useRuntimeConfig()
   const siteConfig = config.public.siteConfig as SiteConfig
@@ -46,7 +46,8 @@ export async function resolveNotionPage(
     if (pageId) {
       try {
         recordMap = await getPage(pageId)
-      } catch (err) {
+      }
+      catch (err) {
         console.error(`Error fetching page ${pageId}:`, err)
         return {
           error: {
@@ -55,7 +56,8 @@ export async function resolveNotionPage(
           },
         }
       }
-    } else {
+    }
+    else {
       return {
         error: {
           message: `Not found "${rawPageId}"`,
@@ -63,12 +65,14 @@ export async function resolveNotionPage(
         },
       }
     }
-  } else {
+  }
+  else {
     // Root page
     pageId = siteConfig.rootNotionPageId
     try {
       recordMap = await getPage(pageId)
-    } catch (err) {
+    }
+    catch (err) {
       console.error(`Error fetching root page ${pageId}:`, err)
       return {
         error: {

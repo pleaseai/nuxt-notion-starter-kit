@@ -1,4 +1,4 @@
-import type { ExtendedRecordMap, Block } from 'notion-types'
+import type { Block, ExtendedRecordMap } from 'notion-types'
 import type { Component } from 'vue'
 
 export type MapPageUrlFn = (pageId: string) => string
@@ -47,4 +47,4 @@ export interface NotionRendererProps {
   defaultPageCoverPosition?: number
 }
 
-export type { ExtendedRecordMap, Block } from 'notion-types'
+export type { Block, ExtendedRecordMap } from 'notion-types'

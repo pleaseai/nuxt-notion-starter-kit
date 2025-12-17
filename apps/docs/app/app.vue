@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Handle hydration for color mode
-const colorMode = useColorMode()
+const _colorMode = useColorMode()
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import type { Block, BookmarkBlock, EmbedBlock, ImageBlock, VideoBlock } from 'notion-types'
 import { computed } from 'vue'
-import type { Block, ImageBlock, VideoBlock, BookmarkBlock, EmbedBlock } from 'notion-types'
 import { useNotionContext } from '../composables/useNotionContext'
 import NotionText from './NotionText.vue'
 
@@ -27,34 +27,40 @@ const caption = computed(() => {
 })
 
 const imageUrl = computed(() => {
-  if (blockType.value !== 'image') return undefined
+  if (blockType.value !== 'image')
+    return undefined
   const src = source.value
-  if (!src) return undefined
+  if (!src)
+    return undefined
   return mapImageUrl(src, props.block)
 })
 
 const videoUrl = computed(() => {
-  if (blockType.value !== 'video') return undefined
+  if (blockType.value !== 'video')
+    return undefined
   return source.value
 })
 
 const isYouTube = computed(() => {
   const url = videoUrl.value
-  if (!url) return false
+  if (!url)
+    return false
   return url.includes('youtube.com') || url.includes('youtu.be')
 })
 
 const youTubeId = computed(() => {
   const url = videoUrl.value
-  if (!url) return undefined
+  if (!url)
+    return undefined
 
   // Extract YouTube video ID
-  const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)
+  const match = url.match(/(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/)
   return match?.[1]
 })
 
 const bookmark = computed(() => {
-  if (blockType.value !== 'bookmark') return undefined
+  if (blockType.value !== 'bookmark')
+    return undefined
   const block = props.block as BookmarkBlock
   return {
     link: block.properties?.link?.[0]?.[0],
@@ -66,7 +72,8 @@ const bookmark = computed(() => {
 })
 
 const embedUrl = computed(() => {
-  if (blockType.value !== 'embed') return undefined
+  if (blockType.value !== 'embed')
+    return undefined
   return source.value
 })
 
@@ -97,7 +104,7 @@ const imageFormat = computed(() => {
           aspectRatio: imageFormat.aspectRatio ? String(imageFormat.aspectRatio) : undefined,
         }"
         loading="lazy"
-      />
+      >
     </div>
 
     <!-- Video -->
@@ -140,12 +147,12 @@ const imageFormat = computed(() => {
             :src="bookmark.icon"
             class="notion-bookmark-icon"
             loading="lazy"
-          />
+          >
           <span>{{ bookmark.link }}</span>
         </div>
       </div>
       <div v-if="bookmark.cover" class="notion-bookmark-cover">
-        <img :src="bookmark.cover" alt="" loading="lazy" />
+        <img :src="bookmark.cover" alt="" loading="lazy">
       </div>
     </a>
 

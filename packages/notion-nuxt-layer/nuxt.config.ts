@@ -1,8 +1,6 @@
 export default defineNuxtConfig({
-  modules: [
-    '@nuxtjs/color-mode',
-  ],
-
+  modules: ['@nuxtjs/color-mode', '@nuxt/eslint'],
+  compatibilityDate: '2025-07-22',
   css: [
     '@pleaseai/notion-vue/styles.css',
   ],
@@ -24,6 +22,11 @@ export default defineNuxtConfig({
     prerender: {
       crawlLinks: false,
       routes: [],
+    },
+  },
+  eslint: {
+    config: {
+      standalone: false, // <---
     },
   },
 })

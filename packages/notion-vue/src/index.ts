@@ -1,35 +1,35 @@
+export { default as NotionAsset } from './components/NotionAsset.vue'
+export { default as NotionBlock } from './components/NotionBlock.vue'
+export { default as NotionCollection } from './components/NotionCollection.vue'
 // Components
 export { default as NotionRenderer } from './components/NotionRenderer.vue'
-export { default as NotionBlock } from './components/NotionBlock.vue'
 export { default as NotionText } from './components/NotionText.vue'
-export { default as NotionAsset } from './components/NotionAsset.vue'
-export { default as NotionCollection } from './components/NotionCollection.vue'
 
 // Composables
-export { useNotionContext, provideNotionContext } from './composables/useNotionContext'
+export { provideNotionContext, useNotionContext } from './composables/useNotionContext'
 
 // Types
 export type {
-  NotionRendererProps,
-  NotionContext,
-  NotionComponents,
-  MapPageUrlFn,
   MapImageUrlFn,
+  MapPageUrlFn,
+  NotionComponents,
+  NotionContext,
+  NotionRendererProps,
 } from './types'
 
 // Utils
 export {
-  cs,
   createMapPageUrl,
-  mapImageUrl,
+  cs,
   getBlockColorClass,
-  hasBlockChildren,
-  getTextContent,
   getBlockTitle,
   getPageProperty,
+  getTextContent,
+  hasBlockChildren,
+  mapImageUrl,
   parsePageId,
   uuidToId,
 } from './utils'
 
 // Re-export useful types from notion-types
-export type { ExtendedRecordMap, Block, PageBlock, Decoration } from 'notion-types'
+export type { Block, Decoration, ExtendedRecordMap, PageBlock } from 'notion-types'

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NotionRenderer, getBlockTitle } from '@pleaseai/notion-vue'
+import { getBlockTitle, NotionRenderer } from '@pleaseai/notion-vue'
 
 const config = useRuntimeConfig()
 const siteConfig = config.public.siteConfig as {
@@ -37,7 +37,8 @@ const isDarkMode = computed(() => colorMode.value === 'dark')
 
 // Get page title for SEO
 const pageTitle = computed(() => {
-  if (!pageData.value?.recordMap?.block) return siteConfig.name
+  if (!pageData.value?.recordMap?.block)
+    return siteConfig.name
 
   const keys = Object.keys(pageData.value.recordMap.block)
   const rootBlock = keys[0] ? pageData.value.recordMap.block[keys[0]]?.value : null

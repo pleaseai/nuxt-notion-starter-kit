@@ -1,8 +1,9 @@
 {
   "name": "nuxt-notion-starter-kit",
+  "type": "module",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
+  "packageManager": "bun@1.3.3",
   "engines": {
     "node": ">=20"
   },
@@ -16,13 +17,15 @@
     "build:vue": "turbo build --filter=@pleaseai/notion-vue",
     "build:docs": "turbo build --filter=@pleaseai/nuxt-notion-docs",
     "preview": "turbo preview --filter=@pleaseai/nuxt-notion-docs",
-    "lint": "turbo lint",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "type-check": "turbo type-check",
     "clean": "turbo clean"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^4.11.0",
+    "eslint": "^9.28.0",
     "turbo": "^2.5.0",
     "typescript": "^5.7.2"
-  },
-  "packageManager": "bun@1.3.3"
+  }
 }

@@ -1,7 +1,7 @@
 import type { Block } from 'notion-types'
 import { defaultMapImageUrl, defaultMapPageUrl } from 'notion-utils'
 
-export { getTextContent, getBlockTitle, getPageProperty, parsePageId, uuidToId } from 'notion-utils'
+export { getBlockTitle, getPageProperty, getTextContent, parsePageId, uuidToId } from 'notion-utils'
 
 /**
  * ClassNames utility (similar to classnames/clsx)
@@ -30,7 +30,8 @@ export function mapImageUrl(url: string, block: Block): string {
  * Get block color class
  */
 export function getBlockColorClass(color?: string): string | undefined {
-  if (!color || color === 'default') return undefined
+  if (!color || color === 'default')
+    return undefined
   return `notion-${color}`
 }
 

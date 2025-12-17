@@ -2,11 +2,12 @@ import siteConfig from './site.config'
 
 export default defineNuxtConfig({
   extends: ['@pleaseai/notion-nuxt-layer'],
+  compatibilityDate: '2025-07-22',
 
-  compatibilityDate: '2024-11-01',
   future: {
     compatibilityVersion: 4,
   },
+
   devtools: { enabled: true },
 
   // Expose site config to runtime
@@ -30,4 +31,11 @@ export default defineNuxtConfig({
   css: [
     '~/assets/css/global.css',
   ],
+
+  modules: ['@nuxt/eslint'],
+  eslint: {
+    config: {
+      standalone: false, // <---
+    },
+  },
 })

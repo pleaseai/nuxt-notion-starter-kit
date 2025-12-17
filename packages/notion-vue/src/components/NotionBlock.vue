@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
 import type { Block, Decoration } from 'notion-types'
+import { computed, ref } from 'vue'
 import { useNotionContext } from '../composables/useNotionContext'
 import { cs, getBlockColorClass, hasBlockChildren } from '../utils'
-import NotionText from './NotionText.vue'
 import NotionAsset from './NotionAsset.vue'
+import NotionText from './NotionText.vue'
 
 const props = defineProps<{
   block: Block
@@ -35,14 +35,16 @@ const listNestingLevel = computed(() => {
 
   while (currentBlock) {
     const parentId: string | undefined = currentBlock.parent_id
-    if (!parentId) break
+    if (!parentId)
+      break
 
     const parentBlock: Block | undefined = recordMap.block[parentId]?.value
-    if (!parentBlock) break
+    if (!parentBlock)
+      break
 
     if (
-      parentBlock.type === 'bulleted_list' ||
-      parentBlock.type === 'numbered_list'
+      parentBlock.type === 'bulleted_list'
+      || parentBlock.type === 'numbered_list'
     ) {
       level++
     }
@@ -107,7 +109,7 @@ const numberedListStyle = computed(() => {
     </h4>
 
     <!-- Divider -->
-    <hr v-else-if="blockType === 'divider'" class="notion-hr" />
+    <hr v-else-if="blockType === 'divider'" class="notion-hr">
 
     <!-- Quote -->
     <blockquote
@@ -213,7 +215,7 @@ const numberedListStyle = computed(() => {
           :checked="(block as any).properties?.checked?.[0]?.[0] === 'Yes'"
           disabled
           class="notion-to-do-checkbox"
-        />
+        >
         <span :class="{ 'notion-to-do-checked': (block as any).properties?.checked?.[0]?.[0] === 'Yes' }">
           <NotionText v-if="title" :value="title" :block="block" />
         </span>
@@ -246,7 +248,7 @@ const numberedListStyle = computed(() => {
       v-else-if="blockType === 'column'"
       class="notion-column"
       :style="{
-        width: `calc((100% - ${(children.length - 1) * 46}px) * ${(block as any).format?.column_ratio || (1 / children.length)})`
+        width: `calc((100% - ${(children.length - 1) * 46}px) * ${(block as any).format?.column_ratio || (1 / children.length)})`,
       }"
     >
       <template v-if="hasChildren">

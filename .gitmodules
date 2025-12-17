@@ -7,3 +7,6 @@
 [submodule "ref/vue-notion"]
 	path = ref/vue-notion
 	url = https://github.com/janniks/vue-notion
+[submodule "ref/docus"]
+	path = ref/docus
+	url = https://github.com/nuxt-content/docus

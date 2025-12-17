@@ -25,7 +25,8 @@ export default defineEventHandler(async (event) => {
   try {
     const results = await search(searchParams)
     return results
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Search error:', error)
     throw createError({
       statusCode: 500,

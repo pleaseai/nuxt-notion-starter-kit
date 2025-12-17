@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { getBlockTitle } from 'notion-utils'
 import type { Block, PageBlock } from 'notion-types'
+import type { NotionContext, NotionRendererProps } from '../types'
+import { getBlockTitle } from 'notion-utils'
+import { computed } from 'vue'
 import { provideNotionContext } from '../composables/useNotionContext'
-import { createMapPageUrl, mapImageUrl as defaultMapImageUrl, cs } from '../utils'
-import type { NotionRendererProps, NotionContext } from '../types'
+import { createMapPageUrl, cs, mapImageUrl as defaultMapImageUrl } from '../utils'
 import NotionBlock from './NotionBlock.vue'
 import NotionCollection from './NotionCollection.vue'
 
@@ -43,13 +43,15 @@ const rootBlock = computed<Block | undefined>(() => {
 })
 
 const rootPageBlock = computed<PageBlock | undefined>(() => {
-  if (rootBlock.value?.type !== 'page') return undefined
+  if (rootBlock.value?.type !== 'page')
+    return undefined
   return rootBlock.value as PageBlock
 })
 
 // Page metadata
 const pageTitle = computed(() => {
-  if (!rootBlock.value) return ''
+  if (!rootBlock.value)
+    return ''
   return getBlockTitle(rootBlock.value, props.recordMap) || ''
 })
 
@@ -59,7 +61,8 @@ const pageIcon = computed(() => {
 
 const pageCover = computed(() => {
   const cover = rootPageBlock.value?.format?.page_cover
-  if (!cover) return props.defaultPageCover
+  if (!cover)
+    return props.defaultPageCover
   return context.value.mapImageUrl(cover, rootBlock.value!)
 })
 
@@ -89,7 +92,7 @@ function isCollectionView(block: Block): boolean {
       'notion-app',
       darkMode && 'dark-mode',
       fullPage && 'notion-full-page',
-      rootPageBlock?.id === rootPageId && 'index-page'
+      rootPageBlock?.id === rootPageId && 'index-page',
     )"
   >
     <!-- Page Cover -->
@@ -100,7 +103,7 @@ function isCollectionView(block: Block): boolean {
         class="notion-page-cover"
         :style="{ objectPosition: `center ${pageCoverPosition * 100}%` }"
         loading="lazy"
-      />
+      >
     </div>
 
     <main
@@ -108,7 +111,7 @@ function isCollectionView(block: Block): boolean {
         'notion-page',
         !pageCover && 'notion-page-no-cover',
         pageIcon && 'notion-page-has-icon',
-        pageCover && 'notion-page-has-cover'
+        pageCover && 'notion-page-has-cover',
       )"
     >
       <!-- Page Header -->
