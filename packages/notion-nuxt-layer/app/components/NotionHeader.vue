@@ -13,7 +13,7 @@ const siteConfig = config.public.siteConfig as {
   name?: string
   isSearchEnabled?: boolean
   navigationStyle?: 'default' | 'custom'
-  navigationLinks?: Array<{ title: string; pageId?: string; url?: string }>
+  navigationLinks?: Array<{ title: string, pageId?: string, url?: string }>
 }
 
 const isDark = computed(() => colorMode.value === 'dark')
@@ -38,7 +38,8 @@ function closeSearch() {
 
 // Get page icon from block
 const pageIcon = computed(() => {
-  if (!props.block || !props.recordMap) return null
+  if (!props.block || !props.recordMap)
+    return null
   return getBlockIcon(props.block, props.recordMap)
 })
 

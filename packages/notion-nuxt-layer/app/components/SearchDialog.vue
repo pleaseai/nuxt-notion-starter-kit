@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getBlockTitle, getBlockParentPage } from 'notion-utils'
+import { getBlockParentPage, getBlockTitle } from 'notion-utils'
 
 interface SearchResult {
   id: string
@@ -32,10 +32,11 @@ let searchTimeout: ReturnType<typeof setTimeout> | undefined
 
 // Focus trap handler
 function handleFocusTrap(e: KeyboardEvent) {
-  if (e.key !== 'Tab' || !dialogRef.value) return
+  if (e.key !== 'Tab' || !dialogRef.value)
+    return
 
   const focusableElements = dialogRef.value.querySelectorAll<HTMLElement>(
-    'input, button, [href], [tabindex]:not([tabindex="-1"])'
+    'input, button, [href], [tabindex]:not([tabindex="-1"])',
   )
   const firstElement = focusableElements[0]
   const lastElement = focusableElements[focusableElements.length - 1]
@@ -43,7 +44,8 @@ function handleFocusTrap(e: KeyboardEvent) {
   if (e.shiftKey && document.activeElement === firstElement) {
     e.preventDefault()
     lastElement?.focus()
-  } else if (!e.shiftKey && document.activeElement === lastElement) {
+  }
+  else if (!e.shiftKey && document.activeElement === lastElement) {
     e.preventDefault()
     firstElement?.focus()
   }
@@ -58,14 +60,15 @@ watch(
         inputRef.value?.focus()
         document.addEventListener('keydown', handleFocusTrap)
       })
-    } else {
+    }
+    else {
       // Reset state when closed
       query.value = ''
       searchResults.value = []
       searchError.value = null
       document.removeEventListener('keydown', handleFocusTrap)
     }
-  }
+  },
 )
 
 // Cleanup on unmount
@@ -97,7 +100,8 @@ watch(query, (newQuery) => {
 })
 
 async function performSearch(searchQuery: string) {
-  if (!searchQuery.trim()) return
+  if (!searchQuery.trim())
+    return
 
   try {
     const response = await $fetch('/api/search-notion', {
@@ -126,13 +130,16 @@ async function performSearch(searchQuery: string) {
     const processedResults = (result.results || [])
       .map((item: any) => {
         const block = result.recordMap?.block?.[item.id]?.value
-        if (!block) return null
+        if (!block)
+          return null
 
         const title = getBlockTitle(block, result.recordMap)
-        if (!title) return null
+        if (!title)
+          return null
 
         const page = getBlockParentPage(block, result.recordMap, { inclusive: true }) || block
-        if (!page?.id) return null
+        if (!page?.id)
+          return null
 
         let highlightHtml = ''
         if (item.highlight?.text) {
@@ -153,13 +160,14 @@ async function performSearch(searchQuery: string) {
 
     // Dedupe by page ID
     const uniqueResults = Object.values(
-      Object.fromEntries(processedResults.map((r: any) => [r.pageId, r]))
+      Object.fromEntries(processedResults.map((r: any) => [r.pageId, r])),
     )
 
     searchResults.value = uniqueResults as any[]
     totalResults.value = result.total || uniqueResults.length
     searchError.value = null
-  } catch (err: unknown) {
+  }
+  catch (err: unknown) {
     console.error('[SearchDialog] Search request failed:', {
       error: err,
       query: searchQuery,
@@ -170,16 +178,20 @@ async function performSearch(searchQuery: string) {
     if (err instanceof Error) {
       if (err.message.includes('network') || err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
         searchError.value = 'Network error. Check your connection and try again.'
-      } else if (err.message.includes('timeout')) {
+      }
+      else if (err.message.includes('timeout')) {
         searchError.value = 'Search timed out. Try a simpler query.'
-      } else {
+      }
+      else {
         searchError.value = 'Search failed. Please try again.'
       }
-    } else {
+    }
+    else {
       searchError.value = 'Search failed. Please try again.'
     }
     searchResults.value = []
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }
@@ -216,7 +228,9 @@ function mapPageUrl(pageId: string): string {
       @click="handleBackdropClick"
     >
       <div ref="dialogRef" class="notion-search">
-        <h2 id="search-dialog-title" class="sr-only">Search</h2>
+        <h2 id="search-dialog-title" class="sr-only">
+          Search
+        </h2>
         <div class="notion-search-bar">
           <div class="notion-search-icon" aria-hidden="true">
             <Icon v-if="isLoading" name="svg-spinners:ring-resize" />
@@ -279,13 +293,21 @@ function mapPageUrl(pageId: string): string {
           </template>
 
           <div v-else-if="searchError" class="notion-search-empty">
-            <div class="notion-search-empty-title">Search error</div>
-            <div class="notion-search-empty-message">{{ searchError }}</div>
+            <div class="notion-search-empty-title">
+              Search error
+            </div>
+            <div class="notion-search-empty-message">
+              {{ searchError }}
+            </div>
           </div>
 
           <div v-else class="notion-search-empty">
-            <div class="notion-search-empty-title">No results</div>
-            <div class="notion-search-empty-message">Try different search terms</div>
+            <div class="notion-search-empty-title">
+              No results
+            </div>
+            <div class="notion-search-empty-message">
+              Try different search terms
+            </div>
           </div>
         </div>
 

@@ -19,7 +19,7 @@ function toggleDarkMode() {
 }
 
 const socialLinks = computed(() => {
-  const links: Array<{ name: string; url: string; icon: string; title: string }> = []
+  const links: Array<{ name: string, url: string, icon: string, title: string }> = []
 
   if (siteConfig.twitter) {
     links.push({
