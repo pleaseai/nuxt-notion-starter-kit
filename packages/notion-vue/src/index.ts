@@ -1,7 +1,8 @@
+// Components
 export { default as NotionAsset } from './components/NotionAsset.vue'
 export { default as NotionBlock } from './components/NotionBlock.vue'
+export { default as NotionCode } from './components/NotionCode.vue'
 export { default as NotionCollection } from './components/NotionCollection.vue'
-// Components
 export { default as NotionRenderer } from './components/NotionRenderer.vue'
 export { default as NotionText } from './components/NotionText.vue'
 

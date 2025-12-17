@@ -4,6 +4,7 @@ import { computed, ref } from 'vue'
 import { useNotionContext } from '../composables/useNotionContext'
 import { cs, getBlockColorClass, hasBlockChildren } from '../utils'
 import NotionAsset from './NotionAsset.vue'
+import NotionCode from './NotionCode.vue'
 import NotionText from './NotionText.vue'
 
 const props = defineProps<{
@@ -261,18 +262,11 @@ const numberedListStyle = computed(() => {
       </template>
     </div>
 
-    <!-- Code block -->
-    <div
+    <!-- Code block with syntax highlighting -->
+    <NotionCode
       v-else-if="blockType === 'code'"
-      class="notion-code"
-    >
-      <pre>
-        <code :class="`language-${(block as any).properties?.language?.[0]?.[0] || 'plain'}`">{{ title?.[0]?.[0] || '' }}</code>
-      </pre>
-      <div v-if="(block as any).properties?.caption" class="notion-code-caption">
-        <NotionText :value="(block as any).properties.caption" :block="block" />
-      </div>
-    </div>
+      :block="(block as any)"
+    />
 
     <!-- Image, Video, Embed, Bookmark -->
     <NotionAsset

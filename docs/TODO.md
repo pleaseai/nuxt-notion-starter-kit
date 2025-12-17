@@ -2,29 +2,29 @@
 
 Quick reference for features not yet implemented in nuxt-notion-starter-kit.
 
-## High Priority
+## High Priority (COMPLETED)
 
 ### Layout Components
-- [ ] **Navigation Header** - Site navigation with breadcrumbs
-  - Ref: `ref/nextjs-notion-starter-kit/components/NotionPageHeader.tsx`
-- [ ] **Footer** - Site footer with social links
-  - Ref: `ref/nextjs-notion-starter-kit/components/Footer.tsx`
-- [ ] **Search Dialog** - In-page search UI
-  - Ref: `ref/react-notion-x/packages/react-notion-x/src/components/search-dialog.tsx`
+- [x] **Navigation Header** - Site navigation with breadcrumbs
+  - Implemented: `packages/notion-nuxt-layer/app/components/NotionHeader.vue`
+- [x] **Footer** - Site footer with social links
+  - Implemented: `packages/notion-nuxt-layer/app/components/NotionFooter.vue`
+- [x] **Search Dialog** - In-page search UI
+  - Implemented: `packages/notion-nuxt-layer/app/components/SearchDialog.vue`
 
 ### Error Pages
-- [ ] **404 Page** - Not found page
-  - Ref: `ref/nextjs-notion-starter-kit/components/Page404.tsx`
-- [ ] **Error Page** - Generic error display
-  - Ref: `ref/nextjs-notion-starter-kit/components/ErrorPage.tsx`
+- [x] **404 Page** - Not found page
+  - Implemented: `packages/notion-nuxt-layer/app/pages/404.vue`
+- [x] **Error Page** - Generic error display
+  - Implemented: `packages/notion-nuxt-layer/app/error.vue`
 
 ### Code Enhancement
-- [ ] **Syntax Highlighting** - Prism.js or Shiki integration
-  - Ref: `ref/react-notion-x/packages/react-notion-x/src/third-party/code.tsx`
+- [x] **Syntax Highlighting** - Shiki integration
+  - Implemented: `packages/notion-vue/src/components/NotionCode.vue`
 
 ### SEO
-- [ ] **PageHead Component** - Complete meta tag management
-  - Ref: `ref/nextjs-notion-starter-kit/components/PageHead.tsx`
+- [x] **useNotionSeo Composable** - Complete meta tag management
+  - Implemented: `packages/notion-nuxt-layer/app/composables/useNotionSeo.ts`
 
 ---
 
@@ -109,10 +109,24 @@ Quick reference for features not yet implemented in nuxt-notion-starter-kit.
 - [x] NotionText - All text decorations
 - [x] NotionAsset - Image, Video, Embed, Bookmark
 - [x] NotionCollection - Table view (MVP)
+- [x] NotionCode - Syntax highlighting with Shiki
+
+### Layout Components
+- [x] NotionHeader - Site navigation header
+- [x] NotionFooter - Site footer with social links
+- [x] SearchDialog - In-page search UI
+- [x] Default layout - Header + Content + Footer
+
+### Error Handling
+- [x] 404 Page - Not found page
+- [x] Error Page - Generic error display
 
 ### APIs
 - [x] Notion page fetching
 - [x] Notion search
+
+### SEO
+- [x] useNotionSeo - Complete meta tag composable
 
 ### Configuration
 - [x] Site configuration
