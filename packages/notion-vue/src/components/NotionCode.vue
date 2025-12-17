@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import type { CodeBlock } from 'notion-types'
 import { getBlockTitle } from 'notion-utils'
 import { createHighlighter, type Highlighter } from 'shiki'
@@ -19,6 +19,7 @@ const props = withDefaults(
 const { recordMap } = useNotionContext()
 
 const isCopied = ref(false)
+const copyError = ref(false)
 const highlightedCode = ref('')
 const highlighter = ref<Highlighter | null>(null)
 let copyTimeout: ReturnType<typeof setTimeout> | undefined
@@ -81,7 +82,11 @@ async function initHighlighter() {
     })
     highlight()
   } catch (err) {
-    console.warn('Shiki highlighter init error:', err)
+    console.error('[NotionCode] Shiki highlighter initialization failed:', {
+      error: err,
+      language: language.value,
+      blockId: props.block.id,
+    })
     highlightedCode.value = escapeHtml(content.value)
   }
 }
@@ -104,7 +109,11 @@ function highlight() {
       },
     })
   } catch (err) {
-    console.warn('Shiki highlight error:', err)
+    console.error('[NotionCode] Shiki highlight failed:', {
+      error: err,
+      language: language.value,
+      blockId: props.block.id,
+    })
     highlightedCode.value = escapeHtml(content.value)
   }
 }
@@ -122,6 +131,7 @@ async function copyToClipboard() {
   try {
     await navigator.clipboard.writeText(content.value)
     isCopied.value = true
+    copyError.value = false
 
     if (copyTimeout) {
       clearTimeout(copyTimeout)
@@ -131,12 +141,28 @@ async function copyToClipboard() {
       isCopied.value = false
     }, 1200)
   } catch (err) {
-    console.warn('Copy to clipboard failed:', err)
+    console.error('[NotionCode] Clipboard copy failed:', err)
+    copyError.value = true
+    isCopied.value = false
+
+    if (copyTimeout) {
+      clearTimeout(copyTimeout)
+    }
+
+    copyTimeout = setTimeout(() => {
+      copyError.value = false
+    }, 2000)
   }
 }
 
 onMounted(() => {
   initHighlighter()
+})
+
+onUnmounted(() => {
+  if (copyTimeout) {
+    clearTimeout(copyTimeout)
+  }
 })
 
 watch(content, () => {
@@ -154,10 +180,16 @@ watch(content, () => {
       <div class="notion-code-copy">
         <button
           class="notion-code-copy-button"
-          :title="isCopied ? 'Copied!' : 'Copy code'"
+          :class="{ 'notion-code-copy-error': copyError }"
+          :title="copyError ? 'Copy failed' : isCopied ? 'Copied!' : 'Copy code'"
+          :aria-label="copyError ? 'Copy failed' : isCopied ? 'Copied!' : 'Copy code'"
           @click="copyToClipboard"
         >
-          <svg v-if="isCopied" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg v-if="copyError" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+          <svg v-else-if="isCopied" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="20 6 9 17 4 12" />
           </svg>
           <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -167,6 +199,9 @@ watch(content, () => {
         </button>
         <div v-if="isCopied" class="notion-code-copy-tooltip">
           Copied
+        </div>
+        <div v-if="copyError" class="notion-code-copy-tooltip notion-code-copy-tooltip-error">
+          Failed
         </div>
       </div>
       <code
@@ -200,7 +235,8 @@ watch(content, () => {
 }
 
 .notion-code:focus {
-  outline: none;
+  outline: 2px solid var(--notion-blue, #2383e2);
+  outline-offset: 2px;
 }
 
 .notion-code code {
@@ -250,8 +286,8 @@ watch(content, () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
   background: var(--bg-color);
   border: 1px solid var(--fg-color-1);
   border-radius: 4px;
@@ -260,8 +296,20 @@ watch(content, () => {
   transition: opacity 0.15s ease-out, background 0.1s ease-out;
 }
 
-.notion-code:hover .notion-code-copy-button {
+.notion-code:hover .notion-code-copy-button,
+.notion-code:focus-within .notion-code-copy-button {
   opacity: 1;
+}
+
+/* Always show copy button on touch devices */
+@media (hover: none) {
+  .notion-code-copy-button {
+    opacity: 0.7;
+  }
+}
+
+.notion-code-copy-error {
+  border-color: var(--notion-red, #e03e3e);
 }
 
 .notion-code-copy-button:hover {
@@ -281,6 +329,11 @@ watch(content, () => {
   border: 1px solid var(--fg-color-1);
   border-radius: 4px;
   padding: 4px 8px;
+}
+
+.notion-code-copy-tooltip-error {
+  color: var(--notion-red, #e03e3e);
+  border-color: var(--notion-red, #e03e3e);
 }
 
 .notion-asset-caption {

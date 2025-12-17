@@ -14,8 +14,7 @@ const siteConfig = config.public.siteConfig as {
 const currentYear = new Date().getFullYear()
 const isDark = computed(() => colorMode.value === 'dark')
 
-function toggleDarkMode(e: Event) {
-  e.preventDefault()
+function toggleDarkMode() {
   colorMode.preference = isDark.value ? 'light' : 'dark'
 }
 
@@ -88,16 +87,16 @@ const socialLinks = computed(() => {
 
     <div class="notion-footer-settings">
       <ClientOnly>
-        <a
-          href="#"
-          role="button"
+        <button
+          type="button"
           class="notion-footer-toggle-dark-mode"
           :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+          :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
           @click="toggleDarkMode"
         >
           <Icon v-if="isDark" icon="ph:moon-fill" />
           <Icon v-else icon="ph:sun-bold" />
-        </a>
+        </button>
       </ClientOnly>
     </div>
 
@@ -107,6 +106,7 @@ const socialLinks = computed(() => {
         :key="link.name"
         :href="link.url"
         :title="link.title"
+        :aria-label="link.title"
         :class="`notion-footer-social-${link.name}`"
         target="_blank"
         rel="noopener noreferrer"
@@ -143,10 +143,13 @@ const socialLinks = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  background: transparent;
+  border: none;
   border-radius: 4px;
   color: var(--fg-color-3);
+  cursor: pointer;
   transition: background 0.1s ease-out;
 }
 
@@ -170,8 +173,8 @@ const socialLinks = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
   border-radius: 4px;
   color: var(--fg-color-3);
   transition: background 0.1s ease-out, color 0.1s ease-out;

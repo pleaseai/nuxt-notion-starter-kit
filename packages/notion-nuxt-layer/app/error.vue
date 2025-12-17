@@ -110,7 +110,7 @@ function handleError() {
   padding: 0.75rem 1.5rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #fff;
+  color: var(--notion-button-text, #fff);
   background: var(--notion-blue);
   border: none;
   border-radius: 4px;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Block } from 'notion-types'
-import { getBlockTitle, getBlockIcon } from 'notion-utils'
+import { getBlockIcon } from 'notion-utils'
 
 const props = defineProps<{
   block?: Block
@@ -36,40 +36,33 @@ function closeSearch() {
   showSearchDialog.value = false
 }
 
-// Get page title from block
-const pageTitle = computed(() => {
-  if (!props.block || !props.recordMap) return siteConfig.name || 'Home'
-  return getBlockTitle(props.block, props.recordMap) || siteConfig.name || 'Home'
-})
-
 // Get page icon from block
 const pageIcon = computed(() => {
   if (!props.block || !props.recordMap) return null
   return getBlockIcon(props.block, props.recordMap)
 })
 
-// Keyboard shortcut for search
-onMounted(() => {
-  const handleKeydown = (e: KeyboardEvent) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-      e.preventDefault()
-      showSearchDialog.value = !showSearchDialog.value
-    }
-    if (e.key === 'Escape') {
-      showSearchDialog.value = false
-    }
+// Keyboard shortcut for search - handler stored for cleanup
+function handleKeydown(e: KeyboardEvent) {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault()
+    showSearchDialog.value = !showSearchDialog.value
   }
+  if (e.key === 'Escape') {
+    showSearchDialog.value = false
+  }
+}
 
+onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
+})
 
-  onUnmounted(() => {
-    window.removeEventListener('keydown', handleKeydown)
-  })
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
 })
 
 // Map page URL for navigation
 function mapPageUrl(pageId: string): string {
-  // Remove dashes from page ID
   const cleanId = pageId.replace(/-/g, '')
   return `/${cleanId}`
 }
@@ -215,8 +208,8 @@ function mapPageUrl(pageId: string): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
   background: transparent;
   border: none;
   border-radius: 4px;
@@ -263,7 +256,7 @@ function mapPageUrl(pageId: string): string {
   }
 
   .notion-nav-search-button {
-    width: 2rem;
+    min-width: 2.75rem;
     padding: 0;
     border: none;
   }

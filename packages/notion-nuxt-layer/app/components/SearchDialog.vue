@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { getBlockTitle, getBlockParentPage } from 'notion-utils'
 
+interface SearchResult {
+  id: string
+  pageId: string
+  title: string
+  highlightHtml: string
+  icon: string | null
+}
+
 const props = defineProps<{
   isOpen: boolean
 }>()
@@ -12,14 +20,34 @@ const emit = defineEmits<{
 const config = useRuntimeConfig()
 const siteConfig = config.public.siteConfig as { rootNotionPageId?: string }
 
+const dialogRef = ref<HTMLElement | null>(null)
 const inputRef = ref<HTMLInputElement | null>(null)
 const query = ref('')
 const isLoading = ref(false)
-const searchResults = ref<any[]>([])
+const searchResults = ref<SearchResult[]>([])
 const searchError = ref<string | null>(null)
 const totalResults = ref(0)
 
 let searchTimeout: ReturnType<typeof setTimeout> | undefined
+
+// Focus trap handler
+function handleFocusTrap(e: KeyboardEvent) {
+  if (e.key !== 'Tab' || !dialogRef.value) return
+
+  const focusableElements = dialogRef.value.querySelectorAll<HTMLElement>(
+    'input, button, [href], [tabindex]:not([tabindex="-1"])'
+  )
+  const firstElement = focusableElements[0]
+  const lastElement = focusableElements[focusableElements.length - 1]
+
+  if (e.shiftKey && document.activeElement === firstElement) {
+    e.preventDefault()
+    lastElement?.focus()
+  } else if (!e.shiftKey && document.activeElement === lastElement) {
+    e.preventDefault()
+    firstElement?.focus()
+  }
+}
 
 // Focus input when dialog opens
 watch(
@@ -28,15 +56,25 @@ watch(
     if (isOpen) {
       nextTick(() => {
         inputRef.value?.focus()
+        document.addEventListener('keydown', handleFocusTrap)
       })
     } else {
       // Reset state when closed
       query.value = ''
       searchResults.value = []
       searchError.value = null
+      document.removeEventListener('keydown', handleFocusTrap)
     }
   }
 )
+
+// Cleanup on unmount
+onUnmounted(() => {
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+  }
+  document.removeEventListener('keydown', handleFocusTrap)
+})
 
 // Throttled search
 watch(query, (newQuery) => {
@@ -121,9 +159,25 @@ async function performSearch(searchQuery: string) {
     searchResults.value = uniqueResults as any[]
     totalResults.value = result.total || uniqueResults.length
     searchError.value = null
-  } catch (err) {
-    console.error('Search error:', err)
-    searchError.value = 'Search failed'
+  } catch (err: unknown) {
+    console.error('[SearchDialog] Search request failed:', {
+      error: err,
+      query: searchQuery,
+      ancestorId: siteConfig.rootNotionPageId,
+    })
+
+    // Provide more specific error messages where possible
+    if (err instanceof Error) {
+      if (err.message.includes('network') || err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
+        searchError.value = 'Network error. Check your connection and try again.'
+      } else if (err.message.includes('timeout')) {
+        searchError.value = 'Search timed out. Try a simpler query.'
+      } else {
+        searchError.value = 'Search failed. Please try again.'
+      }
+    } else {
+      searchError.value = 'Search failed. Please try again.'
+    }
     searchResults.value = []
   } finally {
     isLoading.value = false
@@ -156,11 +210,15 @@ function mapPageUrl(pageId: string): string {
     <div
       v-if="isOpen"
       class="notion-search-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="search-dialog-title"
       @click="handleBackdropClick"
     >
-      <div class="notion-search">
+      <div ref="dialogRef" class="notion-search">
+        <h2 id="search-dialog-title" class="sr-only">Search</h2>
         <div class="notion-search-bar">
-          <div class="notion-search-icon">
+          <div class="notion-search-icon" aria-hidden="true">
             <Icon v-if="isLoading" icon="svg-spinners:ring-resize" />
             <Icon v-else icon="ph:magnifying-glass" />
           </div>
@@ -171,11 +229,14 @@ function mapPageUrl(pageId: string): string {
             type="text"
             class="notion-search-input"
             placeholder="Search..."
+            aria-label="Search pages"
           >
 
           <button
             v-if="query"
+            type="button"
             class="notion-search-clear"
+            aria-label="Clear search"
             @click="clearQuery"
           >
             <Icon icon="ph:x" />
@@ -232,8 +293,6 @@ function mapPageUrl(pageId: string): string {
         <div v-else-if="!query.trim() && !isLoading" class="notion-search-hint">
           <div>Start typing to search...</div>
           <div class="notion-search-hint-shortcuts">
-            <kbd>↑</kbd><kbd>↓</kbd> to navigate
-            <kbd>↵</kbd> to select
             <kbd>esc</kbd> to close
           </div>
         </div>
@@ -243,6 +302,19 @@ function mapPageUrl(pageId: string): string {
 </template>
 
 <style scoped>
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .notion-search-overlay {
   position: fixed;
   inset: 0;
@@ -251,7 +323,7 @@ function mapPageUrl(pageId: string): string {
   align-items: flex-start;
   justify-content: center;
   padding-top: 15vh;
-  background: rgba(15, 15, 15, 0.6);
+  background: var(--overlay-background, rgba(15, 15, 15, 0.6));
   backdrop-filter: blur(2px);
 }
 
@@ -302,8 +374,8 @@ function mapPageUrl(pageId: string): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
   background: var(--bg-color-0);
   border: none;
   border-radius: 4px;
@@ -313,6 +385,11 @@ function mapPageUrl(pageId: string): string {
 
 .notion-search-clear:hover {
   color: var(--fg-color);
+}
+
+.notion-search-clear:focus {
+  outline: 2px solid var(--notion-blue, #2383e2);
+  outline-offset: 2px;
 }
 
 .notion-search-results {
@@ -430,5 +507,16 @@ function mapPageUrl(pageId: string): string {
   font-family: inherit;
   background: var(--bg-color-1);
   border-radius: 3px;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 640px) {
+  .notion-search-overlay {
+    padding-top: 5vh;
+  }
+
+  .notion-search-results {
+    max-height: 60vh;
+  }
 }
 </style>

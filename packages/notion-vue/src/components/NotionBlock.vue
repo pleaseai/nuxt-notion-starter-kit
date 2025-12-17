@@ -1,11 +1,34 @@
 <script setup lang="ts">
 import type { Block, Decoration } from 'notion-types'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useNotionContext } from '../composables/useNotionContext'
 import { cs, getBlockColorClass, hasBlockChildren } from '../utils'
 import NotionAsset from './NotionAsset.vue'
 import NotionCode from './NotionCode.vue'
 import NotionText from './NotionText.vue'
+
+// Known block types that are handled
+const KNOWN_BLOCK_TYPES = new Set([
+  'text',
+  'header',
+  'sub_header',
+  'sub_sub_header',
+  'divider',
+  'quote',
+  'callout',
+  'toggle',
+  'bulleted_list',
+  'numbered_list',
+  'to_do',
+  'column_list',
+  'column',
+  'code',
+  'image',
+  'video',
+  'embed',
+  'bookmark',
+  'page',
+])
 
 const props = defineProps<{
   block: Block
@@ -59,6 +82,16 @@ const listNestingLevel = computed(() => {
 const numberedListStyle = computed(() => {
   const styles = ['decimal', 'lower-alpha', 'lower-roman']
   return styles[listNestingLevel.value % 3]
+})
+
+// Log unknown block types in development
+onMounted(() => {
+  if (blockType.value && !KNOWN_BLOCK_TYPES.has(blockType.value)) {
+    console.warn('[NotionBlock] Unknown block type encountered:', {
+      blockType: blockType.value,
+      blockId: blockId.value,
+    })
+  }
 })
 </script>
 
