@@ -6,6 +6,7 @@ export { default as CollectionProperty } from './components/collection/Collectio
 export { default as CollectionViewGallery } from './components/collection/CollectionViewGallery.vue'
 export { default as NestedFormLink } from './components/collection/NestedFormLink.vue'
 // Components
+export { default as LazyImage } from './components/LazyImage.vue'
 export { default as NotionAsset } from './components/NotionAsset.vue'
 export { default as NotionBlock } from './components/NotionBlock.vue'
 
