@@ -219,8 +219,8 @@ function mapPageUrl(pageId: string): string {
         <h2 id="search-dialog-title" class="sr-only">Search</h2>
         <div class="notion-search-bar">
           <div class="notion-search-icon" aria-hidden="true">
-            <Icon v-if="isLoading" icon="svg-spinners:ring-resize" />
-            <Icon v-else icon="ph:magnifying-glass" />
+            <Icon v-if="isLoading" name="svg-spinners:ring-resize" />
+            <Icon v-else name="ph:magnifying-glass" />
           </div>
 
           <input
@@ -239,7 +239,7 @@ function mapPageUrl(pageId: string): string {
             aria-label="Clear search"
             @click="clearQuery"
           >
-            <Icon icon="ph:x" />
+            <Icon name="ph:x" />
           </button>
         </div>
 
@@ -258,7 +258,7 @@ function mapPageUrl(pageId: string): string {
                   {{ result.icon }}
                 </span>
                 <span v-else class="notion-search-result-icon">
-                  <Icon icon="ph:file-text" />
+                  <Icon name="ph:file-text" />
                 </span>
 
                 <div class="notion-search-result-content">

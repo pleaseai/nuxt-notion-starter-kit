@@ -48,7 +48,8 @@ function renderDecoration(item: DecorationItem): VNode {
         content = h('span', { class: `notion-${value}` }, content)
         break
       case 'a': {
-        const href = value as string
+        const href = value as string | undefined
+        if (!href) break
         const isInternal = href.startsWith('/')
 
         if (isInternal && components.Link) {

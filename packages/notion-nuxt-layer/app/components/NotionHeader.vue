@@ -112,9 +112,13 @@ function mapPageUrl(pageId: string): string {
             :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
             @click="toggleDarkMode"
           >
-            <Icon v-if="isDark" icon="ph:moon-fill" />
-            <Icon v-else icon="ph:sun-bold" />
+            <Icon :name="isDark ? 'ph:moon-fill' : 'ph:sun-bold'" />
           </button>
+          <template #fallback>
+            <button class="notion-nav-button">
+              <span class="notion-nav-icon-placeholder" />
+            </button>
+          </template>
         </ClientOnly>
 
         <!-- Search button -->
@@ -124,7 +128,7 @@ function mapPageUrl(pageId: string): string {
           title="Search (⌘K)"
           @click="openSearch"
         >
-          <Icon icon="ph:magnifying-glass" />
+          <Icon name="ph:magnifying-glass" />
           <span class="notion-nav-search-label">Search</span>
           <kbd class="notion-nav-search-kbd">⌘K</kbd>
         </button>

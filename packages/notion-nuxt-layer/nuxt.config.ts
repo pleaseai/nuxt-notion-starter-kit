@@ -11,6 +11,11 @@ export default defineNuxtConfig({
     fallback: 'light',
   },
 
+  icon: {
+    mode: 'svg',
+    clientOnly: true,
+  },
+
   // Default route rules - can be overridden by extending app
   routeRules: {
     '/': { isr: 60 },

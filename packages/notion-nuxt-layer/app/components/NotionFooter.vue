@@ -94,13 +94,17 @@ const socialLinks = computed(() => {
           :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
           @click="toggleDarkMode"
         >
-          <Icon v-if="isDark" icon="ph:moon-fill" />
-          <Icon v-else icon="ph:sun-bold" />
+          <Icon :name="isDark ? 'ph:moon-fill' : 'ph:sun-bold'" />
         </button>
+        <template #fallback>
+          <button type="button" class="notion-footer-toggle-dark-mode">
+            <span class="notion-footer-icon-placeholder" />
+          </button>
+        </template>
       </ClientOnly>
     </div>
 
-    <div class="notion-footer-social">
+    <div v-if="socialLinks.length > 0" class="notion-footer-social">
       <a
         v-for="link in socialLinks"
         :key="link.name"
@@ -111,7 +115,7 @@ const socialLinks = computed(() => {
         target="_blank"
         rel="noopener noreferrer"
       >
-        <Icon :icon="link.icon" />
+        <Icon v-if="link.icon" :name="link.icon" />
       </a>
     </div>
   </footer>
