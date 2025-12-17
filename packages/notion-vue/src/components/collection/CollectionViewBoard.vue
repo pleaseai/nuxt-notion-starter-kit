@@ -59,11 +59,6 @@ const { isGrouped, groups } = useCollectionGroups({
   collectionData: () => props.collectionData,
 })
 
-// Helper to get block from recordMap
-function getBlock(blockId: string): PageBlock | undefined {
-  return recordMap.block[blockId]?.value as PageBlock | undefined
-}
-
 // Get display value for column header
 function getColumnDisplayValue(column: typeof boardColumns.value[0]): unknown {
   if (!column.value)
@@ -127,9 +122,9 @@ function getColumnDisplayValue(column: typeof boardColumns.value[0]): unknown {
               <template v-if="!column.hidden">
                 <template v-for="blockId in column.blockIds" :key="blockId">
                   <CollectionCard
-                    v-if="getBlock(blockId)"
+                    v-if="recordMap.block[blockId]?.value"
                     class="notion-board-group-card"
-                    :block="getBlock(blockId)!"
+                    :block="(recordMap.block[blockId].value as PageBlock)"
                     :collection="collection"
                     :cover="cover"
                     :cover-size="coverSize"
@@ -186,9 +181,9 @@ function getColumnDisplayValue(column: typeof boardColumns.value[0]): unknown {
           <template v-if="!column.hidden">
             <template v-for="blockId in column.blockIds" :key="blockId">
               <CollectionCard
-                v-if="getBlock(blockId)"
+                v-if="recordMap.block[blockId]?.value"
                 class="notion-board-group-card"
-                :block="getBlock(blockId)!"
+                :block="(recordMap.block[blockId].value as PageBlock)"
                 :collection="collection"
                 :cover="cover"
                 :cover-size="coverSize"

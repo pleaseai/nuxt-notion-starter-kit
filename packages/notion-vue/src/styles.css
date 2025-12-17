@@ -1156,7 +1156,8 @@
   width: 100vw;
   max-width: 100vw;
   align-self: center;
-  overflow: auto hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .notion-board-view {
