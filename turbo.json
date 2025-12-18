@@ -1,8 +1,12 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
+    "prepare": {
+      "outputs": [".nuxt/**"],
+      "cache": true
+    },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["prepare", "^build"],
       "outputs": ["dist/**", ".output/**", ".nuxt/**"]
     },
     "dev": {

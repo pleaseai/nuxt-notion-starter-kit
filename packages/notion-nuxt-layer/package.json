@@ -9,6 +9,10 @@
     "nuxt.config.ts",
     "server"
   ],
+  "scripts": {
+    "prepare": "nuxt prepare",
+    "postinstall": "nuxt prepare"
+  },
   "peerDependencies": {
     "nuxt": "^3.15.0 || ^4.0.0"
   },
