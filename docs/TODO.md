@@ -46,8 +46,9 @@ Quick reference for features not yet implemented in nuxt-notion-starter-kit.
   - Ref: `ref/nextjs-notion-starter-kit/components/LoadingIcon.tsx`
 - [ ] **Full Image Viewer** - Lightbox for images
   - Ref: `ref/react-notion-x/packages/react-notion-x/src/components/lazy-image-full.tsx`
-- [ ] **Modal System** - Modal/dialog infrastructure
-  - Ref: `ref/react-notion-x/packages/react-notion-x/src/third-party/modal.tsx`
+- [x] **Modal System** - Modal/dialog infrastructure
+  - Implemented: `packages/notion-vue/src/components/NotionModal.vue`
+  - Composable: `packages/notion-vue/src/composables/useModal.ts`
 
 ### Third-Party Integrations
 - [ ] **Math Equations (KaTeX)** - Render LaTeX math
