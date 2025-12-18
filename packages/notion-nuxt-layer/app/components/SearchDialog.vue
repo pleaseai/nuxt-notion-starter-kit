@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NotionModal } from '@pleaseai/notion-vue'
 import { getBlockParentPage, getBlockTitle } from 'notion-utils'
 
 interface SearchResult {
@@ -20,7 +21,6 @@ const emit = defineEmits<{
 const config = useRuntimeConfig()
 const siteConfig = config.public.siteConfig as { rootNotionPageId?: string }
 
-const dialogRef = ref<HTMLElement | null>(null)
 const inputRef = ref<HTMLInputElement | null>(null)
 const query = ref('')
 const isLoading = ref(false)
@@ -30,27 +30,6 @@ const totalResults = ref(0)
 
 let searchTimeout: ReturnType<typeof setTimeout> | undefined
 
-// Focus trap handler
-function handleFocusTrap(e: KeyboardEvent) {
-  if (e.key !== 'Tab' || !dialogRef.value)
-    return
-
-  const focusableElements = dialogRef.value.querySelectorAll<HTMLElement>(
-    'input, button, [href], [tabindex]:not([tabindex="-1"])',
-  )
-  const firstElement = focusableElements[0]
-  const lastElement = focusableElements[focusableElements.length - 1]
-
-  if (e.shiftKey && document.activeElement === firstElement) {
-    e.preventDefault()
-    lastElement?.focus()
-  }
-  else if (!e.shiftKey && document.activeElement === lastElement) {
-    e.preventDefault()
-    firstElement?.focus()
-  }
-}
-
 // Focus input when dialog opens
 watch(
   () => props.isOpen,
@@ -58,7 +37,6 @@ watch(
     if (isOpen) {
       nextTick(() => {
         inputRef.value?.focus()
-        document.addEventListener('keydown', handleFocusTrap)
       })
     }
     else {
@@ -66,7 +44,6 @@ watch(
       query.value = ''
       searchResults.value = []
       searchError.value = null
-      document.removeEventListener('keydown', handleFocusTrap)
     }
   },
 )
@@ -76,7 +53,6 @@ onUnmounted(() => {
   if (searchTimeout) {
     clearTimeout(searchTimeout)
   }
-  document.removeEventListener('keydown', handleFocusTrap)
 })
 
 // Throttled search
@@ -205,12 +181,6 @@ function handleResultClick() {
   emit('close')
 }
 
-function handleBackdropClick(e: MouseEvent) {
-  if (e.target === e.currentTarget) {
-    emit('close')
-  }
-}
-
 function mapPageUrl(pageId: string): string {
   const cleanId = pageId.replace(/-/g, '')
   return `/${cleanId}`
@@ -218,147 +188,102 @@ function mapPageUrl(pageId: string): string {
 </script>
 
 <template>
-  <Teleport to="body">
-    <div
-      v-if="isOpen"
-      class="notion-search-overlay"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="search-dialog-title"
-      @click="handleBackdropClick"
-    >
-      <div ref="dialogRef" class="notion-search">
-        <h2 id="search-dialog-title" class="sr-only">
-          Search
-        </h2>
-        <div class="notion-search-bar">
-          <div class="notion-search-icon" aria-hidden="true">
-            <Icon v-if="isLoading" name="svg-spinners:ring-resize" />
-            <Icon v-else name="ph:magnifying-glass" />
-          </div>
+  <NotionModal
+    :is-open="isOpen"
+    title="Search"
+    @close="emit('close')"
+  >
+    <div class="notion-search-bar">
+      <div class="notion-search-icon" aria-hidden="true">
+        <Icon v-if="isLoading" name="svg-spinners:ring-resize" />
+        <Icon v-else name="ph:magnifying-glass" />
+      </div>
 
-          <input
-            ref="inputRef"
-            v-model="query"
-            type="text"
-            class="notion-search-input"
-            placeholder="Search..."
-            aria-label="Search pages"
-          >
+      <input
+        ref="inputRef"
+        v-model="query"
+        type="text"
+        class="notion-search-input"
+        placeholder="Search..."
+        aria-label="Search pages"
+      >
 
-          <button
-            v-if="query"
-            type="button"
-            class="notion-search-clear"
-            aria-label="Clear search"
-            @click="clearQuery"
+      <button
+        v-if="query"
+        type="button"
+        class="notion-search-clear"
+        aria-label="Clear search"
+        @click="clearQuery"
+      >
+        <Icon name="ph:x" />
+      </button>
+    </div>
+
+    <!-- Results -->
+    <div v-if="query.trim() && !isLoading" class="notion-search-results">
+      <template v-if="searchResults.length > 0">
+        <div class="notion-search-results-list">
+          <NuxtLink
+            v-for="result in searchResults"
+            :key="result.id"
+            :to="mapPageUrl(result.pageId)"
+            class="notion-search-result"
+            @click="handleResultClick"
           >
-            <Icon name="ph:x" />
-          </button>
+            <span v-if="result.icon" class="notion-search-result-icon">
+              {{ result.icon }}
+            </span>
+            <span v-else class="notion-search-result-icon">
+              <Icon name="ph:file-text" />
+            </span>
+
+            <div class="notion-search-result-content">
+              <span class="notion-search-result-title">{{ result.title }}</span>
+              <span
+                v-if="result.highlightHtml"
+                class="notion-search-result-highlight"
+                v-html="result.highlightHtml"
+              />
+            </div>
+          </NuxtLink>
         </div>
 
-        <!-- Results -->
-        <div v-if="query.trim() && !isLoading" class="notion-search-results">
-          <template v-if="searchResults.length > 0">
-            <div class="notion-search-results-list">
-              <NuxtLink
-                v-for="result in searchResults"
-                :key="result.id"
-                :to="mapPageUrl(result.pageId)"
-                class="notion-search-result"
-                @click="handleResultClick"
-              >
-                <span v-if="result.icon" class="notion-search-result-icon">
-                  {{ result.icon }}
-                </span>
-                <span v-else class="notion-search-result-icon">
-                  <Icon name="ph:file-text" />
-                </span>
-
-                <div class="notion-search-result-content">
-                  <span class="notion-search-result-title">{{ result.title }}</span>
-                  <span
-                    v-if="result.highlightHtml"
-                    class="notion-search-result-highlight"
-                    v-html="result.highlightHtml"
-                  />
-                </div>
-              </NuxtLink>
-            </div>
-
-            <div class="notion-search-footer">
-              <span class="notion-search-count">{{ totalResults }}</span>
-              {{ totalResults === 1 ? 'result' : 'results' }}
-            </div>
-          </template>
-
-          <div v-else-if="searchError" class="notion-search-empty">
-            <div class="notion-search-empty-title">
-              Search error
-            </div>
-            <div class="notion-search-empty-message">
-              {{ searchError }}
-            </div>
-          </div>
-
-          <div v-else class="notion-search-empty">
-            <div class="notion-search-empty-title">
-              No results
-            </div>
-            <div class="notion-search-empty-message">
-              Try different search terms
-            </div>
-          </div>
+        <div class="notion-search-footer">
+          <span class="notion-search-count">{{ totalResults }}</span>
+          {{ totalResults === 1 ? 'result' : 'results' }}
         </div>
+      </template>
 
-        <!-- Empty state when no query -->
-        <div v-else-if="!query.trim() && !isLoading" class="notion-search-hint">
-          <div>Start typing to search...</div>
-          <div class="notion-search-hint-shortcuts">
-            <kbd>esc</kbd> to close
-          </div>
+      <div v-else-if="searchError" class="notion-search-empty">
+        <div class="notion-search-empty-title">
+          Search error
+        </div>
+        <div class="notion-search-empty-message">
+          {{ searchError }}
+        </div>
+      </div>
+
+      <div v-else class="notion-search-empty">
+        <div class="notion-search-empty-title">
+          No results
+        </div>
+        <div class="notion-search-empty-message">
+          Try different search terms
         </div>
       </div>
     </div>
-  </Teleport>
+
+    <!-- Empty state when no query -->
+    <div v-else-if="!query.trim() && !isLoading" class="notion-search-hint">
+      <div>Start typing to search...</div>
+      <div class="notion-search-hint-shortcuts">
+        <kbd>esc</kbd> to close
+      </div>
+    </div>
+  </NotionModal>
 </template>
 
 <style scoped>
-/* Screen reader only */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.notion-search-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 15vh;
-  background: var(--overlay-background, rgba(15, 15, 15, 0.6));
-  backdrop-filter: blur(2px);
-}
-
-.notion-search {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 1rem;
-  background: var(--bg-color);
-  border-radius: 8px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-}
-
 .notion-search-bar {
   display: flex;
   align-items: center;
@@ -533,10 +458,6 @@ function mapPageUrl(pageId: string): string {
 
 /* Mobile responsive styles */
 @media (max-width: 640px) {
-  .notion-search-overlay {
-    padding-top: 5vh;
-  }
-
   .notion-search-results {
     max-height: 60vh;
   }
